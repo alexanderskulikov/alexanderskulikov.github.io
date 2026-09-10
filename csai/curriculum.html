@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Curriculum | CSAI B.Sc. at Neapolis University Pafos</title>
+    <meta
+      name="description"
+      content="Eight-semester curriculum and course catalog for the Computer Science and Artificial Intelligence B.Sc. program."
+    >
+    <link rel="preload" href="fonts/Ubuntu-Regular.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="fonts/Ubuntu-Bold.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header" data-header>
+      <a class="brand" href="index.html#top" aria-label="CSAI home">
+        <img src="../csai-assets/images/nup-logo.png" alt="">
+        <span>CSAI B.Sc.</span>
+      </a>
+      <nav class="top-nav" aria-label="Main navigation">
+        <a href="index.html#about">About</a>
+        <a href="curriculum.html" aria-current="page">Curriculum</a>
+        <a href="research.html">Research</a>
+        <a href="olympiads.html">Olympiads</a>
+        <a href="professors.html">Professors</a>
+        <a href="career.html">Career</a>
+        <a href="index.html#admission">Admission</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="subpage-hero" aria-labelledby="curriculum-title">
+        <div class="subpage-hero-bg"></div>
+        <div class="subpage-hero-content">
+          <p class="eyebrow">Curriculum</p>
+          <h1 id="curriculum-title">Eight semesters from foundations to thesis work.</h1>
+          <p>
+            The program starts with mathematics, algorithms, and programming, then moves into
+            machine learning, systems, robotics, electives, industrial placement, and research.
+          </p>
+        </div>
+      </section>
+
+      <section class="section alt-section">
+        <div class="section-heading compact">
+          <p class="eyebrow">Program Map</p>
+          <h2>Semester-by-semester structure.</h2>
+          <p>
+            Filter by area, then click any detailed course to open its prerequisites, syllabus,
+            expected outcomes, assessment format, and instructors.
+          </p>
+        </div>
+        <div class="course-toolbar" aria-label="Course filters">
+          <button class="filter-button active" type="button" data-filter="all">All</button>
+          <button class="filter-button" type="button" data-filter="math">Mathematics</button>
+          <button class="filter-button" type="button" data-filter="prog">Programming and AI</button>
+          <button class="filter-button" type="button" data-filter="proj">Project-based</button>
+          <button class="filter-button" type="button" data-filter="opt">Electives</button>
+        </div>
+        <div class="legend" aria-label="Course categories">
+          <span class="legend-item math">Mathematics</span>
+          <span class="legend-item prog">Programming and AI</span>
+          <span class="legend-item proj">Project-based</span>
+          <span class="legend-item opt">Electives</span>
+          <span class="legend-item misc">General studies</span>
+        </div>
+        <div class="curriculum-board curriculum-board-wide" data-curriculum></div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading compact">
+          <p class="eyebrow">Courses</p>
+          <h2>Filtered course details.</h2>
+          <p>
+            Courses are stored in one structured data file and rendered by one shared component,
+            so new courses can be added without editing every page.
+          </p>
+        </div>
+        <div class="course-grid" data-courses></div>
+      </section>
+    </main>
+
+    <dialog class="course-modal" data-modal aria-label="Course details">
+      <button class="modal-close" type="button" data-close aria-label="Close course details">×</button>
+      <div data-modal-content></div>
+    </dialog>
+
+    <script src="data/courses.js?v=2"></script>
+    <script src="data/curriculum.js?v=2"></script>
+    <script src="main.js?v=2"></script>
+  </body>
+</html>

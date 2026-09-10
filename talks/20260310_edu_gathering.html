@@ -1,0 +1,801 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Computer Science and Artificial Intelligence Achievements and Challenges</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+    <style>
+      @font-face {
+        font-family: "Ubuntu Local";
+        src: url("../csai/fonts/Ubuntu-Regular.ttf") format("truetype");
+        font-weight: 400;
+      }
+
+      @font-face {
+        font-family: "Ubuntu Local";
+        src: url("../csai/fonts/Ubuntu-Bold.ttf") format("truetype");
+        font-weight: 700;
+      }
+
+      :root {
+        --ink: #17142a;
+        --muted: #67637a;
+        --paper: #f6f4ff;
+        --surface: #ffffff;
+        --line: #ddd8f0;
+        --purple: #6d5cff;
+        --purple-dark: #3f347f;
+        --violet-soft: #ece8ff;
+        --lime: #c9ff7a;
+        --shadow: 0 22px 60px rgba(23, 20, 42, 0.2);
+        --slide-safe-x: 2.3em;
+        --slide-safe-y: 1.44em;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #17142a;
+      }
+
+      .reveal-viewport {
+        background: #17142a;
+      }
+
+      .reveal {
+        color: var(--ink);
+        font-family: "Ubuntu Local", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      .reveal .slides {
+        text-align: left;
+      }
+
+      .reveal .slides section {
+        min-height: 100%;
+      }
+
+      .reveal h1,
+      .reveal h2,
+      .reveal h3,
+      .reveal p {
+        margin-left: 0;
+        margin-right: 0;
+        font-family: inherit;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+
+      .reveal h1 {
+        max-width: 1160px;
+        color: #fff;
+        font-size: 5.8em;
+        line-height: 0.92;
+      }
+
+      .reveal h2 {
+        color: var(--ink);
+        font-size: 4.6em;
+        line-height: 1.05;
+      }
+
+      .reveal h3 {
+        color: var(--ink);
+        font-size: 0.62em;
+        line-height: 1.15;
+      }
+
+      .reveal p {
+        max-width: 880px;
+        color: var(--muted);
+        font-size: 1.35em;
+        line-height: 1.35;
+      }
+
+      .slide {
+        position: relative;
+        display: grid !important;
+        align-content: center;
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+        padding: var(--slide-safe-y) var(--slide-safe-x);
+      }
+
+      .hero-slide {
+        padding: 0.8em var(--slide-safe-x);
+        color: #fff;
+        background: transparent;
+      }
+
+      .cover-image {
+        display: none;
+      }
+
+      .hero-slide::after,
+      .section-slide::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      .hero-slide::after {
+        background: transparent;
+      }
+
+      .hero-slide p {
+        color: rgba(255, 255, 255, 0.82);
+        text-shadow: 0 4px 18px rgba(23, 20, 42, 0.62);
+      }
+
+      .hero-title-main,
+      .hero-title-subtitle {
+        display: block;
+        text-shadow: 0 6px 28px rgba(23, 20, 42, 0.7);
+      }
+
+      .hero-title-subtitle {
+        margin-top: 0.18em;
+        color: var(--lime);
+        font-size: 0.44em;
+        line-height: 1;
+      }
+
+      .eyebrow {
+        margin: 0 0 0.45em;
+        color: var(--lime);
+        font-size: 1em;
+        font-weight: 700;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.55em;
+        max-width: 1180px;
+        margin-top: 1.1em;
+      }
+
+      .menu-card,
+      .note-card {
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 0.52em;
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(12px);
+      }
+
+      .menu-card strong,
+      .menu-card span {
+        display: block;
+      }
+
+      .menu-card strong {
+        color: #fff;
+        font-size: 1.85em;
+      }
+
+      .menu-card span {
+        margin-top: 0.25em;
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 1.05em;
+      }
+
+      .section-slide h2 {
+        text-shadow: 0 6px 26px rgba(23, 20, 42, 0.72);
+      }
+
+      .section-slide {
+        color: #fff;
+        background: transparent;
+      }
+
+      .section-slide::after {
+        background: transparent;
+      }
+
+      .section-slide h2,
+      .section-slide p {
+        color: #fff;
+      }
+
+      .content-slide {
+        background:
+          radial-gradient(circle at 82% 0%, rgba(109, 92, 255, 0.12), transparent 28rem),
+          linear-gradient(180deg, #fbfaff 0%, var(--paper) 100%);
+      }
+
+      .team-block {
+        display: grid;
+        gap: 0.86em;
+        margin-top: 0.34em;
+      }
+
+      .team-block .team-label:nth-of-type(2) {
+        margin-top: 1.45em;
+      }
+
+      .team-label {
+        display: inline-flex;
+        width: max-content;
+        border: 1px solid rgba(109, 92, 255, 0.25);
+        border-radius: 999px;
+        padding: 0.2em 0.48em;
+        background: #fff;
+        color: var(--purple-dark);
+        font-size: 0.9em;
+        font-weight: 700;
+      }
+
+      .people-grid {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 0.86em 0.04em;
+      }
+
+      .people-grid.invited {
+        grid-template-columns: repeat(13, minmax(0, 1fr));
+        gap: 0.46em 0.01em;
+      }
+
+      .person {
+        display: grid;
+        justify-items: center;
+        gap: 0.4em;
+        min-width: 0;
+        text-align: center;
+      }
+
+      .person img {
+        width: 7em;
+        height: 7em;
+        border: 0.1em solid var(--purple);
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0 10px 24px rgba(23, 20, 42, 0.18);
+      }
+
+      .person span {
+        color: var(--ink);
+        font-size: 1em;
+        font-weight: 700;
+        line-height: 1.1;
+      }
+
+      .people-grid.invited .person img {
+        width: 5.278em;
+        height: 5.278em;
+      }
+
+      .people-grid.invited .person span {
+        font-size: 0.74em;
+      }
+
+      .featured-people {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.7em;
+        margin-top: 0.9em;
+      }
+
+      .featured-people .person img {
+        width: 14em;
+        height: 14em;
+        border-width: 0.1em;
+      }
+
+      .featured-people .person span {
+        font-size: 1.25em;
+      }
+
+      .image-pair {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.65em;
+        align-items: start;
+        margin-top: 0.8em;
+      }
+
+      .image-card {
+        display: grid;
+        gap: 0.56em;
+      }
+
+      .image-card img {
+        width: 100%;
+        height: 18em;
+        border-radius: 8px;
+        object-fit: cover;
+        box-shadow: var(--shadow);
+      }
+
+      .image-card figcaption {
+        color: var(--ink);
+        font-size: 1.08em;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+
+      .placeholder {
+        display: grid;
+        place-items: center;
+        min-height: 7.8em;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+        color: var(--purple-dark);
+        font-size: 1em;
+        font-weight: 700;
+        box-shadow: 0 1px 0 rgba(23, 20, 42, 0.04);
+      }
+
+      .block-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.7em;
+        margin-top: 0.9em;
+      }
+
+      .block-grid.two {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .block-grid.vertical {
+        grid-template-columns: 1fr;
+        gap: 0.45em;
+      }
+
+      .text-block {
+        display: grid;
+        place-items: center;
+        min-height: 5.3em;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 0.75em;
+        background: #fff;
+        color: var(--purple-dark);
+        font-size: 1.28em;
+        font-weight: 700;
+        line-height: 1.16;
+        text-align: center;
+        box-shadow: 0 1px 0 rgba(23, 20, 42, 0.04);
+      }
+
+      .text-block h3 {
+        margin: 0 0 0.28em;
+        color: var(--purple-dark);
+        font-size: 1.05em;
+      }
+
+      .text-block p {
+        margin: 0;
+        color: var(--ink);
+        font-size: 0.72em;
+        font-weight: 400;
+        line-height: 1.28;
+      }
+
+      .text-block.left {
+        place-items: start;
+        text-align: left;
+      }
+
+      .text-block ul {
+        margin: 0;
+        padding-left: 1.1em;
+        color: var(--ink);
+        font-size: 0.72em;
+        font-weight: 400;
+        line-height: 1.28;
+        text-align: left;
+      }
+
+      .career-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+        gap: 0.7em;
+        margin-top: 0.75em;
+        align-items: start;
+      }
+
+      .career-column {
+        display: grid;
+        gap: 0.4em;
+      }
+
+      .track-title {
+        color: var(--purple-dark);
+        font-size: 1.55em;
+        font-weight: 700;
+      }
+
+      .career-column.industry .text-block {
+        align-content: center;
+      }
+
+      .career-column .text-block h3 {
+        font-size: 0.86em;
+      }
+
+      .challenge-grid .text-block,
+      .challenge-card {
+        font-size: 1.44em;
+      }
+
+      .ai-photo-grid {
+        display: grid;
+        gap: 0.42em;
+        width: 60%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 0.62em;
+      }
+
+      .ai-photo-grid img {
+        width: 100%;
+        border-radius: 8px;
+        object-fit: cover;
+        box-shadow: var(--shadow);
+      }
+
+      .ai-photo-grid .wide-photo {
+        height: auto;
+        object-fit: contain;
+        background: #fff;
+      }
+
+      .ai-photo-grid .photo-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.42em;
+      }
+
+      .ai-photo-grid .photo-row img {
+        height: 10.4em;
+      }
+
+      .admission-photo {
+        width: 100%;
+        height: 24.5em;
+        margin-top: 0.52em;
+        border-radius: 8px;
+        object-fit: cover;
+        object-position: center bottom;
+        box-shadow: var(--shadow);
+      }
+
+      .closing-slide {
+        align-content: center;
+      }
+
+      .closing-image {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+      }
+
+      .closing-blocks,
+      .closing-questions {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.7em;
+        margin-top: 0.75em;
+      }
+
+      .closing-blocks .text-block,
+      .closing-questions .text-block {
+        align-content: start;
+      }
+
+      .closing-questions .text-block {
+        place-items: center;
+        align-content: center;
+        min-height: 3.8em;
+        font-size: 1.08em;
+        text-align: center;
+      }
+
+      .achievement-list {
+        display: grid;
+        gap: 0.9em;
+        margin-top: 0.8em;
+        padding: 0;
+        list-style: none;
+      }
+
+      .achievement-list > li {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 0.68em 0.82em;
+        background: #fff;
+        box-shadow: 0 1px 0 rgba(23, 20, 42, 0.04);
+      }
+
+      .achievement-list strong {
+        display: block;
+        color: var(--purple-dark);
+        font-size: 1.4em;
+      }
+
+      .achievement-list ul {
+        margin: 0.45em 0 0;
+        padding-left: 1.1em;
+      }
+
+      .achievement-list li li {
+        margin: 0.22em 0;
+        color: var(--ink);
+        font-size: 1.12em;
+        line-height: 1.25;
+      }
+
+      .reveal .progress {
+        color: var(--purple);
+      }
+
+      .reveal .controls {
+        color: var(--purple);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section class="slide hero-slide" data-background-image="../csai-assets/images/csai-brand-cover.png" data-background-size="cover" data-background-position="center" data-background-repeat="no-repeat">
+          <img class="cover-image" src="../csai-assets/images/csai-brand-cover.png" alt="">
+          <p class="eyebrow">Neapolis University Pafos x JetBrains Foundation</p>
+          <h1>
+            <span class="hero-title-main">Computer Science and Artificial Intelligence</span>
+            <span class="hero-title-subtitle">Achievements and Challenges</span>
+          </h1>
+          <p>Education Team Gathering · September 10, 2026</p>
+          <div class="menu-grid">
+            <div class="menu-card">
+              <strong>Team</strong>
+            </div>
+            <div class="menu-card">
+              <strong>Students</strong>
+            </div>
+            <div class="menu-card">
+              <strong>AI</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide section-slide" data-background-image="../csai-assets/images/csai-brand-cover.png" data-background-size="cover" data-background-position="center" data-background-repeat="no-repeat">
+            <img class="cover-image" src="../csai-assets/images/csai-brand-cover.png" alt="">
+            <h2>Team</h2>
+            <p>Core team, invited professors, and new colleagues joining the program.</p>
+          </section>
+
+          <section class="slide content-slide">
+            <h2>Team Members</h2>
+            <div class="team-block">
+              <span class="team-label">Core Team</span>
+              <div class="people-grid">
+                <div class="person"><img src="../csai-assets/images/professors/avdiushenko.jpg" alt="Alexander Avdiushenko"><span>Alexander Avdiushenko</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/berlenko.jpg" alt="Tatiana Berlenko"><span>Tatiana Berlenko</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/kitaeva.png" alt="Natalia Kitaeva"><span>Natalia Kitaeva</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/kulikov.jpg" alt="Alexander Kulikov"><span>Alexander Kulikov</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/mavrin.jpeg" alt="Pavel Mavrin"><span>Pavel Mavrin</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/mihajlin.jpg" alt="Ivan Mihajlin"><span>Ivan Mihajlin</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/romanov.png" alt="Mikhail Romanov"><span>Mikhail Romanov</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/shen.jpg" alt="Alexander Shen"><span>Alexander Shen</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/smal.jpg" alt="Alexander Smal"><span>Alexander Smal</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/smolensky.jpg" alt="Andrei Smolensky"><span>Andrei Smolensky</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/tikhomirov.jpg" alt="Mikhail Tikhomirov"><span>Mikhail Tikhomirov</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/zhukova.jpg" alt="Darya Zhukova"><span>Darya Zhukova</span></div>
+              </div>
+              <span class="team-label">Invited Professors</span>
+              <div class="people-grid invited">
+                <div class="person"><img src="../csai-assets/images/professors/agarkov.jpg" alt="Ivan Agarkov"><span>Ivan Agarkov</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/anisimov.jpg" alt="Artem Anisimov"><span>Artem Anisimov</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/bakharev.jpg" alt="Fedor Bakharev"><span>Fedor Bakharev</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/savvas.png" alt="Savvas Chatzichristofis"><span>Savvas Chatzichristofis</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/kugushev.png" alt="Alexander Kugushev"><span>Alexander Kugushev</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/kuligin.jpg" alt="Leonid Kuligin"><span>Leonid Kuligin</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/nechaev.jpg" alt="Ilya Nechaev"><span>Ilya Nechaev</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/nigmatullin.png" alt="Niyaz Nigmatullin"><span>Niyaz Nigmatullin</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/ogorodnik.jpeg" alt="Simon Ogorodnik"><span>Simon Ogorodnik</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/sergey.jpg" alt="Ilya Sergey"><span>Ilya Sergey</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/shakirova.png" alt="Venera Shakirova"><span>Venera Shakirova</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/slinko.jpg" alt="Igor Slinko"><span>Igor Slinko</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/tolstopyatov.png" alt="Vsevolod Tolstopyatov"><span>Vsevolod Tolstopyatov</span></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="slide content-slide">
+            <h2>New Team Members</h2>
+            <div class="featured-people">
+              <div class="person"><img src="../csai-assets/images/professors/romanov.png" alt="Mikhail Romanov"><span>Mikhail Romanov</span></div>
+              <div class="person"><img src="../csai-assets/images/professors/shen.jpg" alt="Alexander Shen"><span>Alexander Shen</span></div>
+              <div class="person"><img src="../csai-assets/images/professors/tikhomirov.jpg" alt="Mikhail Tikhomirov"><span>Mikhail Tikhomirov</span></div>
+            </div>
+          </section>
+
+          <section class="slide content-slide">
+            <h2>Challenges</h2>
+            <div class="block-grid two challenge-grid">
+              <div class="text-block">Attracting great engineers</div>
+              <div class="text-block">Rethinking the curriculum</div>
+            </div>
+          </section>
+
+        <section class="slide section-slide" data-background-image="../csai-assets/images/csai-brand-cover.png" data-background-size="cover" data-background-position="center" data-background-repeat="no-repeat">
+            <img class="cover-image" src="../csai-assets/images/csai-brand-cover.png" alt="">
+            <h2>Students</h2>
+            <p>Admission, olympiads, JetBrains participation, and academic achievements.</p>
+          </section>
+
+          <section class="slide content-slide">
+            <h2>Admission</h2>
+            <img class="admission-photo" src="../csai-assets/images/students24.jpg" alt="Students in 2024">
+            <div class="block-grid">
+              <div class="text-block">
+                <h3>2026</h3>
+                <p>Applications: 38/164. Countries: 9/39. Grant rejections: 3.</p>
+              </div>
+              <div class="text-block">
+                <h3>2025</h3>
+                <p>Applications: 25/78. Countries: 9/24. Grant rejections: 2.</p>
+              </div>
+              <div class="text-block">
+                <h3>Sources</h3>
+                <p>Online clubs, ACTS, social networks.</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="slide content-slide">
+            <h2>Olympiads</h2>
+            <div class="image-pair">
+              <figure class="image-card">
+                <img src="../csai-assets/images/imc2026.jpeg" alt="IMC 2026 team">
+                <figcaption>IMC 2026: two gold medals, three silver medals, 16th place worldwide</figcaption>
+              </figure>
+              <figure class="image-card">
+                <img src="../csai-assets/images/iwls2026.jpeg" alt="IWLS 2026 team">
+                <figcaption>IWLS 2026: first place</figcaption>
+              </figure>
+            </div>
+          </section>
+
+          <section class="slide content-slide">
+            <h2>Career Tracks</h2>
+            <div class="career-layout">
+              <div class="career-column industry">
+                <div class="track-title">Industry, JetBrains</div>
+                <div class="text-block left">
+                  <ul>
+                    <li>2026 graduates: 8 employees</li>
+                    <li>2024-5 graduates: 18 employees</li>
+                    <li>Students: 9 employees, 2 interns</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="career-column">
+                <div class="track-title">Academy</div>
+                <div class="text-block left">
+                  <h3>Graduate Studies</h3>
+                  <p>M.Sc.: Constructor University, KIT, University Pompeu Fabra, University of Cologne.</p>
+                  <p>Ph.D.: Cornell, NUS.</p>
+                </div>
+                <div class="text-block left">
+                  <h3>Publications</h3>
+                  <p>CAV26 (Distinguished Paper Award!), STACS26, POPL26, DL4C@NeurIPS25, STACS25, AAAI25, POPL25.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="slide content-slide">
+            <h2>Challenges</h2>
+            <div class="placeholder challenge-card">Hiring students</div>
+          </section>
+
+        <section class="slide section-slide" data-background-image="../csai-assets/images/csai-brand-cover.png" data-background-size="cover" data-background-position="center" data-background-repeat="no-repeat">
+            <img class="cover-image" src="../csai-assets/images/csai-brand-cover.png" alt="">
+            <h2>AI</h2>
+            <p>Courses, research, and olympiad activity around artificial intelligence.</p>
+          </section>
+
+          <section class="slide content-slide">
+            <h2>Teaching and Learning in AI Era</h2>
+            <div class="block-grid">
+              <div class="text-block">
+                <h3>New Formats</h3>
+                <p>Flipped courses, solutions day.</p>
+              </div>
+              <div class="text-block">
+                <h3>New Courses</h3>
+                <p>ML Ops (Kuligin), Developer Essentials (Ogorodnik, Tolstopyatov), Lean (Sergey), AI Adoption (Kulikov, Smal).</p>
+              </div>
+              <div class="text-block">
+                <h3>New Research</h3>
+                <p>Machine learning, algorithms, programming languages.</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="slide content-slide">
+            <h2>AI and High Schoolers</h2>
+            <div class="ai-photo-grid">
+              <img class="wide-photo" src="../csai-assets/images/aiclub26.png" alt="AI Club 2026">
+              <div class="photo-row">
+                <img src="../csai-assets/images/ioai26.jpg" alt="IOAI 2026">
+                <img src="../csai-assets/images/ai26.JPG" alt="AI 2026">
+              </div>
+            </div>
+          </section>
+
+          <section class="slide content-slide">
+            <h2>Challenges</h2>
+            <div class="block-grid two challenge-grid">
+              <div class="text-block">Curriculum</div>
+              <div class="text-block">New Formats</div>
+            </div>
+          </section>
+
+          <section class="slide hero-slide closing-slide" data-background-image="../csai-assets/images/csai-brand-cover.png" data-background-size="cover" data-background-position="center" data-background-repeat="no-repeat">
+            <img class="cover-image" src="../csai-assets/images/csai-brand-cover.png" alt="">
+            <img class="closing-image" src="../csai-assets/images/20251006_opening.jpeg" alt="Opening event">
+            <div class="closing-blocks">
+              <div class="text-block left">
+                <h3>Team</h3>
+                <ul>
+                  <li>Professors in AI/ML, CS, Math</li>
+                  <li>Based in Cyprus</li>
+                </ul>
+              </div>
+              <div class="text-block left">
+                <h3>Students</h3>
+                <ul>
+                  <li>Strong olympiad and publication record</li>
+                  <li>Many work for JetBrains, some continue studying</li>
+                </ul>
+              </div>
+              <div class="text-block left">
+                <h3>AI</h3>
+                <ul>
+                  <li>New courses, formats, research</li>
+                  <li>Activities with high schoolers</li>
+                </ul>
+              </div>
+            </div>
+            <div class="closing-questions">
+              <div class="text-block">How to attract great engineers?</div>
+              <div class="text-block">How to keep students in the company?</div>
+              <div class="text-block">How to reshape the curriculum?</div>
+            </div>
+          </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script>
+      Reveal.initialize({
+        hash: true,
+        controls: true,
+        progress: true,
+        center: false,
+        navigationMode: "linear",
+        width: 1366,
+        height: 768,
+        margin: 0,
+        transition: "slide",
+      });
+    </script>
+  </body>
+</html>
