@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI Adoption</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+    <style>
+      @font-face {
+        font-family: "Ubuntu Local";
+        src: url("../csai/fonts/Ubuntu-Regular.ttf") format("truetype");
+        font-weight: 400;
+      }
+
+      @font-face {
+        font-family: "Ubuntu Local";
+        src: url("../csai/fonts/Ubuntu-Bold.ttf") format("truetype");
+        font-weight: 700;
+      }
+
+      :root {
+        --ink: #17142a;
+        --paper: #f6f4ff;
+        --surface: #ffffff;
+        --line: #ddd8f0;
+        --purple: #6d5cff;
+        --purple-dark: #3f347f;
+        --violet-soft: #ece8ff;
+      }
+
+      * { box-sizing: border-box; }
+
+      body,
+      .reveal-viewport { background: var(--paper); }
+
+      .reveal {
+        color: var(--ink);
+        font-family: "Ubuntu Local", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      .reveal .slides { text-align: left; }
+      .reveal .slides section { min-height: 100%; }
+
+      .reveal h2,
+      .reveal p {
+        margin-left: 0;
+        margin-right: 0;
+        font-family: inherit;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+
+      .reveal h2 {
+        margin: 0 0 0.3em;
+        color: var(--ink);
+        font-size: 5.8em;
+        line-height: 1;
+      }
+
+      .slide {
+        display: grid !important;
+        align-content: center;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        padding: 1.45em 2.3em;
+        background:
+          radial-gradient(circle at 83% 0%, rgba(109, 92, 255, 0.13), transparent 29rem),
+          linear-gradient(180deg, #fbfaff 0%, var(--paper) 100%);
+      }
+
+      .compact-row {
+        display: grid;
+        grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.65fr) minmax(0, 0.95fr);
+        gap: 0.7em;
+      }
+
+      .text-block {
+        display: grid;
+        place-items: center;
+        min-height: 5.1em;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 0.72em;
+        background: var(--surface);
+        color: var(--purple-dark);
+        font-size: 1.55em;
+        font-weight: 700;
+        line-height: 1.16;
+        text-align: center;
+        box-shadow: 0 1px 0 rgba(23, 20, 42, 0.04);
+      }
+
+      .topic-block {
+        display: grid;
+        align-content: center;
+        min-height: 8.2em;
+        margin-top: 0.7em;
+        border: 1px solid rgba(109, 92, 255, 0.28);
+        border-radius: 8px;
+        padding: 0.95em 1.05em;
+        background: var(--violet-soft);
+        color: var(--ink);
+        font-size: 1.22em;
+        font-weight: 700;
+        line-height: 1.35;
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section class="slide" data-background-color="#f6f4ff">
+          <h2>AI Adoption</h2>
+          <div class="compact-row">
+            <div class="text-block">Friday, 9 AM</div>
+            <div class="text-block">N. Chukhin, A. Kulikov, A. Smal</div>
+            <div class="text-block">Exploring together</div>
+          </div>
+          <div class="topic-block">
+            agents, AI tools, AI workflow automation, AI-assisted research, agentic workflows, APIs, context engineering, context windows, embeddings, evaluation, information retrieval, large language models, LLM-as-a-judge, MCP, memory, multi-agent systems, multimodality, prompt engineering, prompt injection, RAG, reasoning, task decomposition, tokens, Transformers
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script>
+      Reveal.initialize({
+        hash: true,
+        controls: false,
+        progress: false,
+        center: false,
+        navigationMode: "linear",
+        width: 1366,
+        height: 768,
+        margin: 0,
+        transition: "slide",
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Discrete Mathematics 1</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+    <style>
+      @font-face {
+        font-family: "Ubuntu Local";
+        src: url("../csai/fonts/Ubuntu-Regular.ttf") format("truetype");
+        font-weight: 400;
+      }
+
+      @font-face {
+        font-family: "Ubuntu Local";
+        src: url("../csai/fonts/Ubuntu-Bold.ttf") format("truetype");
+        font-weight: 700;
+      }
+
+      :root {
+        --ink: #17142a;
+        --paper: #f6f4ff;
+        --surface: #ffffff;
+        --line: #ddd8f0;
+        --purple: #6d5cff;
+        --purple-dark: #3f347f;
+        --lime: #c9ff7a;
+        --shadow: 0 22px 60px rgba(23, 20, 42, 0.18);
+        --safe-x: 2.3em;
+        --safe-y: 1.35em;
+      }
+
+      * { box-sizing: border-box; }
+
+      body,
+      .reveal-viewport { background: var(--ink); }
+
+      .reveal {
+        color: var(--ink);
+        font-family: "Ubuntu Local", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      .reveal .slides { text-align: left; }
+      .reveal .slides section { min-height: 100%; }
+
+      .reveal h1,
+      .reveal h2,
+      .reveal h3,
+      .reveal p {
+        margin-left: 0;
+        margin-right: 0;
+        font-family: inherit;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+
+      .reveal h2 {
+        margin: 0 0 0.22em;
+        color: var(--ink);
+        font-size: 5.4em;
+        line-height: 1;
+      }
+
+      .slide {
+        position: relative;
+        display: grid !important;
+        align-content: center;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        padding: var(--safe-y) var(--safe-x);
+        background:
+          radial-gradient(circle at 83% 0%, rgba(109, 92, 255, 0.13), transparent 29rem),
+          linear-gradient(180deg, #fbfaff 0%, var(--paper) 100%);
+      }
+
+      .course-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.7em;
+        margin-top: 0.7em;
+      }
+
+      .course-fact {
+        display: grid;
+        align-content: center;
+        min-height: 7em;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 0.8em;
+        background: var(--surface);
+        box-shadow: 0 1px 0 rgba(23, 20, 42, 0.04);
+      }
+
+      .course-fact strong {
+        display: block;
+        color: var(--purple-dark);
+        font-size: 1.8em;
+        line-height: 1.1;
+      }
+
+      .course-fact span {
+        display: block;
+        margin-top: 0.28em;
+        color: var(--ink);
+        font-size: 1.48em;
+        line-height: 1.2;
+      }
+
+      .topic-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+        gap: 1.35em;
+        align-items: center;
+        min-height: 0;
+      }
+
+      .topic-layout img {
+        display: block;
+        width: 100%;
+        max-height: 28em;
+        border-radius: 8px;
+        object-fit: contain;
+        box-shadow: var(--shadow);
+      }
+
+      .topic-list {
+        display: grid;
+        gap: 0.36em;
+        margin: 0;
+        padding-left: 1.15em;
+      }
+
+      .topic-list li {
+        color: var(--ink);
+        font-size: 1.52em;
+        font-weight: 700;
+        line-height: 1.16;
+      }
+
+      .topic-list li::marker { color: var(--purple); }
+
+      .proofs .topic-list {
+        gap: 0.24em;
+      }
+
+      .proofs .topic-list li {
+        font-size: 1.28em;
+      }
+
+      .project {
+        color: var(--purple-dark);
+      }
+
+      .reveal .progress,
+      .reveal .controls { color: var(--purple); }
+    </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section class="slide" data-background-color="#f6f4ff">
+          <h2>Discrete Mathematics 1</h2>
+          <div class="course-grid">
+            <div class="course-fact">
+              <strong>Format</strong>
+              <span>Flipped</span>
+            </div>
+            <div class="course-fact">
+              <strong>In-class meetings</strong>
+              <span>Thursday, 9 AM</span>
+            </div>
+            <div class="course-fact">
+              <strong>Deadlines</strong>
+              <span>Wednesday, 11:59 PM</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide proofs" data-background-color="#f6f4ff">
+          <h2>Proofs</h2>
+          <div class="topic-layout">
+            <img src="assets/20260928_discrete_math/proofs.jpg" alt="Common proof techniques">
+            <ul class="topic-list">
+              <li>Proofs of Existence and Optimality</li>
+              <li>Proofs of Universal Statements: Mathematical Induction</li>
+              <li>Proofs of Algorithm Correctness and Runtime Estimates</li>
+              <li>Proofs in Computer Science (Optional)</li>
+              <li class="project">Project: 15 Puzzle, A*, and Coordinated Motion Planning</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide" data-background-color="#f6f4ff">
+          <h2>Logic</h2>
+          <div class="topic-layout">
+            <img src="assets/20260928_discrete_math/circuits.jpg" alt="Shakespeare and a Boolean circuit">
+            <ul class="topic-list">
+              <li>Propositional Logic</li>
+              <li>Satisfiability Problem</li>
+              <li>Boolean Circuits</li>
+              <li class="project">Project: Optimal Circuit Synthesis with SAT</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide" data-background-color="#f6f4ff">
+          <h2>Set Theory</h2>
+          <div class="topic-layout">
+            <img src="assets/20260928_discrete_math/sets.jpg" alt="Union versus intersection">
+            <ul class="topic-list">
+              <li>Set Theory</li>
+              <li>Partially Ordered Sets</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide" data-background-color="#f6f4ff">
+          <h2>Combinatorics</h2>
+          <div class="topic-layout">
+            <img src="assets/20260928_discrete_math/binomials.jpg" alt="Binomial coefficient symmetry">
+            <ul class="topic-list">
+              <li>Arrangements and Combinations</li>
+              <li>Generation of Combinatorial Objects</li>
+              <li>Recurrence Relations</li>
+              <li>Generating Functions</li>
+              <li class="project">Project: Portfolio Selection</li>
+            </ul>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script>
+      Reveal.initialize({
+        hash: true,
+        controls: true,
+        progress: true,
+        center: false,
+        navigationMode: "linear",
+        width: 1366,
+        height: 768,
+        margin: 0,
+        transition: "slide",
+      });
+    </script>
+  </body>
+</html>
