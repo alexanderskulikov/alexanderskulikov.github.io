@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AI Adoption lecture 4: the agent loop, feedback and checking, real agents of 2025–2026, and two agents that run during the lecture. A 90-minute lecture with live demonstrations.">
+  <title>AI Adoption · Lecture 4 · How Agents Work</title>
+  <link rel="stylesheet" href="vendor/reveal/reveal.css">
+  <link rel="stylesheet" href="slides.css">
+</head>
+<body>
+<div class="reveal"><div class="slides">
+<section class="slide opening" id="opening" data-display="flex" data-chapter="Introduction" data-section="0" data-timing="00:00–00:30 · 0.5 мин.">
+<h1>AI Adoption</h1><p class="opening-subtitle">Lecture 4. How agents work</p><p class="opening-route">The loop · Feedback and checking · Real agents · Practice</p>
+<aside class="notes" lang="ru"><p><strong>00:00–00:30 · 0.5 мин.</strong></p><p>Сегодня — агенты. Сначала коротко свяжем с лекциями 2 и 3, затем запустим двух агентов, которые будут работать всю пару, и вернёмся к ним в конце.</p><p>Управление: стрелки или пробел — дальше, Esc — обзор по разделам, N — эти заметки, F — полный экран. Ответы на вопросах раскрываются следующим нажатием. Вопросы 1–4 и P собираются через бота из лекции 2: <code>python3 ../lecture02/materials/answers-bot/bot.py index.html</code> в папке лекции.</p></aside>
+</section>
+
+<section class="slide" id="recap" data-display="flex" data-chapter="Introduction" data-section="0" data-timing="00:30–02:30 · 2 мин.">
+<h2>Where we are</h2>
+<div class="three" style="margin-top:10px"><div><h3>Lecture 2 · An LLM</h3><p>A Transformer computes the probability of the next token given the context.</p><p class="example">Pretraining → fine-tuning → RL.<br>It writes text. A tool call is also text.</p></div><div><h3>Lecture 3 · Memory</h3><p>The model remembers nothing between requests. Answer = parameters + context.</p><p class="example">A chatbot re-sends the whole conversation, memories and search results every turn.</p></div><div><h3>Today · Agents</h3><p>The model’s text becomes actions. Their results come back into the context.</p><p class="example">The loop runs until the goal is reached, the budget ends, or a person stops it.</p></div></div>
+<p class="key">A chatbot is already a loop — with you inside it.</p>
+<aside class="notes" lang="ru"><p><strong>00:30–02:30 · 2 мин.</strong></p><p><strong>Лекция 2.</strong> LLM — функция, которая по последовательности токенов выдаёт распределение следующего токена; ответ получается выборкой токен за токеном. Обучение: предобучение на текстах, дообучение на диалогах (SFT), затем RL с наградой за проверяемые ответы. Важная деталь со слайда про tool use: вызов инструмента — это просто текст в оговорённом формате, а исполняет его программа вокруг модели.</p><p><strong>Лекция 3.</strong> Модель ничего не помнит между запросами: ответ вычисляется только из параметров и контекста. Чат-бот вроде ChatGPT или Claude.ai на каждом ходе заново отправляет модели всю переписку, а также записи памяти и найденные документы. Всё, что «помнит» чат-бот, скопировано в контекст.</p><p><strong>Сегодня.</strong> Чат-бот — уже цикл: вы пишете, приложение собирает контекст, модель отвечает, вы читаете и решаете, что делать дальше. Если на место человека поставить инструменты, а решение о следующем шаге отдать модели, получится агент. Этим и займёмся.</p></aside>
+</section>
+
+<section class="slide" id="chatbot-to-agent" data-display="flex" data-chapter="Introduction" data-section="0" data-timing="02:30–04:00 · 1.5 мин.">
+<h2>From a chatbot to an agent</h2>
+<p class="flow-label">Chatbot (lecture 3)</p>
+<div class="flow tight"><div class="flow-node"><h3>You</h3><p>type a message</p></div><span class="arrow" aria-hidden="true">→</span><div class="flow-node"><h3>App</h3><p>builds the context: history, memory, search results</p></div><span class="arrow" aria-hidden="true">→</span><div class="flow-node"><h3>LLM</h3><p>writes a reply</p></div><span class="arrow" aria-hidden="true">→</span><div class="flow-node"><h3>You</h3><p>read it and decide what to do next</p></div></div>
+<p class="loop-back">↺ repeat while you want</p>
+<p class="flow-label">Agent (today)</p>
+<div class="flow tight"><div class="flow-node"><h3>Goal</h3><p>given once</p></div><span class="arrow" aria-hidden="true">→</span><div class="flow-node"><h3>Harness</h3><p>builds the context: history, tool results</p></div><span class="arrow" aria-hidden="true">→</span><div class="flow-node"><h3>LLM</h3><p>writes a tool call, or says it is done</p></div><span class="arrow" aria-hidden="true">→</span><div class="flow-node"><h3>Tools</h3><p>run it: shell, files, browser — and return the result</p></div></div>
+<p class="loop-back">↺ repeat until done or out of budget</p>
+<p class="key">Who chooses the next step? In a chatbot, you do. In an agent, the model does.</p>
+<aside class="notes" lang="ru"><p><strong>02:30–04:00 · 1.5 мин.</strong></p><p>Сравнить две строки слева направо. Верхняя — схема из лекции 3: приложение собирает контекст и вызывает модель; после ответа ход возвращается к человеку. Нижняя — та же схема, но место человека в цикле заняли инструменты, а цель задана один раз в начале.</p><p>Вопрос из лекции 1: кто выбирает следующий шаг после того, как инструмент вернул результат, — вы или система? В агенте — модель. Человек остаётся снаружи: ставит цель, задаёт инструменты и разрешения, проверяет результат и может остановить цикл.</p><p>Термин <em>harness</em> («обвязка») — программа вокруг модели, которая собирает контекст, исполняет вызовы и следит за бюджетом. Подробнее — в разделе 1.</p></aside>
+</section>
+
+<section class="slide board" id="warm-up" data-display="flex" data-chapter="Introduction" data-section="0" data-timing="04:00–05:30 · 1.5 мин.">
+<p class="board-kicker">A question for the board</p>
+<h2>Which task would you give an&nbsp;agent for an&nbsp;hour, unsupervised?</h2>
+<p class="board-sub">And how would you check the result?</p>
+<aside class="notes" lang="ru"><p><strong>04:00–05:30 · 1.5 мин.</strong></p><p>Вопрос без номера, ответы устно. Записать на доске 3–4 задачи в левом столбце, а в правом — как проверить результат. Если проверка непонятна («написать главу диплома»), так и записать: «проверка — ?».</p><p>Эта таблица на доске — скелет всей лекции: агенты сильны там, где правый столбец заполнен легко. К ней вернёмся в практике.</p></aside>
+</section>
+
+<section class="slide" id="lecture-plan" data-display="flex" data-chapter="Introduction" data-section="0" data-timing="05:30–06:00 · 0.5 мин.">
+<h2>Today’s lecture</h2>
+<ol class="lecture-map"><li><div><strong>The agent loop</strong><span>an LLM, tools and a while loop</span></div></li><li><div><strong>Why agents work</strong><span>feedback, checking and its limits</span></div></li><li><div><strong>Real agents today</strong><span>from cheap checks to no checks at all</span></div></li><li><div><strong>Back to our two agents</strong><span>did they succeed? we check ourselves</span></div></li><li><div><strong>Practice</strong><span>design an agent</span></div></li></ol>
+<aside class="notes" lang="ru"><p><strong>05:30–06:00 · 0.5 мин.</strong></p><p>Пять разделов. Сквозная мысль: цикл агента простой, а его сила определяется обратной связью — тем, насколько дёшево и надёжно можно проверить результат каждого шага и всей работы.</p><p>Четвёртый раздел — проверка двух агентов, которых мы сейчас запустим.</p></aside>
+</section>
+
+<section class="slide" id="demo-launch" data-display="flex" data-chapter="Introduction" data-section="0" data-timing="06:00–09:00 · 3 мин.">
+<p class="demo-label">Demonstration 0 · two agents start now</p>
+<h2>Two tasks that will run during the lecture</h2>
+<div class="split equal"><div><h3>A. Write a SAT solver from scratch</h3><p class="small">Claude Code, in a cloud sandbox · task in <code>TASK.md</code></p><dl class="card" style="margin-top:22px"><dt>Task</dt><dd>A CDCL solver in pure Python; 80 test formulas with known answers</dd><dt>Tools</dt><dd>shell, Python, git</dd><dt>Checker</dt><dd>its own: assignments, brute force, DRAT proofs</dd><dt>Rules</dt><dd>no other solvers; do not read the answers; do not touch the tests</dd></dl></div><div><h3>B. Deep research</h3><p class="small">a research agent with web search</p><p style="font-size:29px;margin-top:22px">“Which open problems in combinatorics were solved or substantially advanced with AI help, 2025 – October 2026? Table: problem, what the AI did, who checked it, source.”</p></div></div>
+<p class="key">In section 4 we check both — ourselves, not by reading their reports.</p>
+<aside class="notes" lang="ru"><p><strong>06:00–09:00 · 3 мин.</strong></p><p><strong>Задача A</strong> (подготовка и подробности — <code>materials/sat-demo/README.md</code>). Открыть claude.ai/code, выбрать заранее подготовленный репозиторий <code>sat-from-scratch</code>, режим Auto (или Accept edits), вставить промпт:</p><p><code>Read TASK.md and complete the task. Work on your own until it is done: do not ask me questions; make reasonable decisions and record them in REPORT.md. Commit after each milestone and push the branch.</code></p><p>Показать 20–30 секунд: агент читает TASK.md, смотрит формулы, строит план. Напомнить, что такое CDCL: поиск с распространением единичных дизъюнктов, при конфликте — анализ причины, выучивание новой клаузы и откат сразу на несколько уровней. Это несколько сотен строк с тонкими ошибками — хорошая задача на час.</p><p><strong>Задача B.</strong> В ChatGPT (deep research), Claude (Research) или Gemini (Deep Research) вставить вопрос со слайда. Работа займёт 5–30 минут. Можно спросить студентов, не хотят ли они заменить вопрос своим, — но только если вопрос проверяемый.</p><p>Не ждать — переключиться на слайды. Главная фраза: в конце мы не будем верить отчётам агентов, а проверим результаты сами.</p></aside>
+</section>
+
+<section class="slide section-divider" id="section-loop" data-display="flex" data-background-color="#527750" data-chapter="The agent loop" data-section="1" data-timing="09:00 · начало раздела">
+<div class="section-number">1</div>
+<h2>The agent loop</h2>
+<p class="section-description">An LLM, tools and a while loop</p>
+<aside class="notes" lang="ru"><p>Сначала напишем агента сами, затем заглянем внутрь настоящего.</p></aside>
+</section>
+
+<section class="slide" id="definition" data-display="flex" data-chapter="The agent loop" data-section="1" data-timing="09:00–10:30 · 1.5 мин.">
+<h2>What is an agent?</h2>
+<p class="quote">An LLM agent runs tools in a loop to achieve a goal.</p>
+<p class="quote-by">Simon Willison, September 2025</p>
+<div class="three" style="margin-top:40px"><div><h3>Chat</h3><p>The model writes a reply.</p></div><div><h3>+ Tool use</h3><p>The model writes a tool call; the program runs it.</p></div><div><h3>+ Loop</h3><p>The result goes back into the context; the model chooses the next call.</p></div></div>
+<p class="key">“To achieve a goal”: the loop needs a way to stop.</p>
+<p class="source"><a href="https://simonwillison.net/2025/Sep/18/agents/" target="_blank" rel="noopener noreferrer">Willison · “Agent” may finally have a widely enough agreed upon definition</a> · <a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noopener noreferrer">Anthropic · Building effective agents (2024)</a></p>
+<aside class="notes" lang="ru"><p><strong>09:00–10:30 · 1.5 мин.</strong></p><p>Определение Willison стало рабочим определением в индустрии: инструменты, цикл, цель. У Anthropic похожее: агент — система, в которой LLM сама направляет ход работы и выбор инструментов (<em>LLMs dynamically direct their own processes and tool usage</em>); в отличие от workflow, где порядок шагов задан кодом.</p><p>Три ступени — те же, что на слайде лекции 1 о накоплении возможностей: разговор; разговор плюс инструменты; плюс цикл обратной связи. Слова «для достижения цели» означают, что цикл не бесконечный: нужна проверка, что цель достигнута, и бюджет на случай, если нет.</p><p>Точную цитату и URL поста Willison перепроверить: из песочницы, где готовились слайды, сайт был недоступен.</p></aside>
+</section>
+
+<section class="slide" id="minimal-loop" data-display="flex" data-chapter="The agent loop" data-section="1" data-timing="10:30–13:00 · 2.5 мин.">
+<h2>The agent loop in code</h2>
+<div class="split wide-code"><div><pre><code>messages = [{<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: task}]
+<span class="kw">while</span> <span class="kw">True</span>:
+    reply = query_lm(messages)
+    messages.append({<span class="str">"role"</span>: <span class="str">"assistant"</span>,
+                     <span class="str">"content"</span>: reply})
+    command = parse_action(reply)
+    <span class="kw">if</span> command == <span class="str">"exit"</span>:
+        <span class="kw">break</span>
+    result = execute_action(command)
+    messages.append({<span class="str">"role"</span>: <span class="str">"user"</span>,
+                     <span class="str">"content"</span>: result})</code></pre></div><div class="side-note"><p><code>query_lm</code><br>one API request with the whole history</p><p><code>parse_action</code><br>finds the one <code>bash-action</code> block in the reply</p><p><code>execute_action</code><br>runs it in a shell, returns stdout + stderr</p><p class="rust">The command gets the program’s access to files and network.</p></div></div>
+<p class="source">Adapted from the <a href="https://minimal-agent.com/" target="_blank" rel="noopener noreferrer">Minimal AI agent tutorial</a> · full version: <code>materials/agent.py</code></p>
+<aside class="notes" lang="ru"><p><strong>10:30–13:00 · 2.5 мин.</strong></p><p>Пройти код построчно. История сообщений растёт: запрос, ответ модели, результат команды, снова ответ — это и есть контекст из лекции 3, и он пересылается целиком на каждом шаге. Результат команды отправляется с ролью user — так устроен учебный текстовый протокол; в API с tool calling для этого есть отдельный тип блока tool_result.</p><p>Спросить: какие строки делают программу агентом? Существенны две вещи: модель выбирает следующее действие, а результат действия возвращается в её вход. Сам while встречается в любой программе.</p><p>Справа — три функции. Подчеркнуть последнюю строку: модель только пишет текст; доступ к диску и сети появляется в execute_action, и он ровно такой, как у запущенной программы. Ограничения (песочница, разрешения) задаются здесь, а не в промпте. Подробно — в лекции 5.</p><p><strong>Источники.</strong> <a href="https://minimal-agent.com/" target="_blank" rel="noopener noreferrer">Minimal AI agent tutorial</a>.</p></aside>
+</section>
+
+<section class="slide" id="demo-minimal-agent" data-display="flex" data-chapter="The agent loop" data-section="1" data-timing="13:00–17:00 · 4 мин.">
+<p class="demo-label">Demonstration 1</p>
+<h2>A 130-line agent fixes a bug</h2>
+<div class="split"><div><ol class="steps demo"><li>The task: <code>sum_first_odds(n)</code> should return 1 + 3 + … + (2n − 1). Two tests fail.</li><li><code>python3 materials/agent.py</code><br>Each command is shown; Enter runs it.</li><li>Watch the loop: look → run the tests → edit → test again → <code>exit</code>.</li><li>The harness checks for itself: tests unchanged? tests pass? the diff.</li></ol></div><div><p class="code-caption"><code>agent-demo/odd_sums.py</code></p><pre class="compact"><code><span class="kw">def</span> sum_first_odds(n):
+    total = <span class="num">0</span>
+    <span class="kw">for</span> k <span class="kw">in</span> range(<span class="num">1</span>, n):
+        total += <span class="num">2</span> * k - <span class="num">1</span>
+    <span class="kw">return</span> total</code></pre><p class="small muted" style="margin-top:24px">Tests: <code>n = 0, 1, 3</code>, and <code>sum = n²</code> for <code>n &lt; 20</code></p></div></div>
+<p class="source">Live model: Claude Opus 5.5 via the API · without network: <code>python3 materials/demo.py repair</code> (scripted model, real tools)</p>
+<aside class="notes" lang="ru"><p><strong>13:00–17:00 · 4 мин.</strong></p><p>Подготовка: <code>pip install anthropic</code>, переменная ANTHROPIC_API_KEY задана заранее (не показывать её на экране). Запуск из папки lecture04: <code>python3 materials/agent.py</code>. Скрипт копирует <code>materials/agent-demo</code> во временную папку, и агент работает только в копии. Стоимость — центы.</p><p>Перед запуском спросить: при каком n код впервые ошибается? (При n = 1: range(1, 1) пуст, ответ 0 вместо 1.)</p><p>Во время работы: каждая команда показывается до исполнения, Enter запускает её — это «человек в цикле» в самом простом виде. Обращать внимание на строку «context N tokens»: контекст растёт с каждым шагом, потому что вся история пересылается заново (лекция 3). Обычно агенту хватает 4–6 шагов. Если модель ответит не по формату, обвязка вернёт ей сообщение об ошибке — это тоже наблюдение.</p><p>В конце скрипт сам проверяет результат: не изменились ли файлы тестов (по хешу), проходят ли тесты, какой получился diff. Фраза агента «готово» — не доказательство; проверка — это код обвязки.</p><p>Запасной вариант без сети: <code>python3 materials/demo.py repair</code> — те же инструменты, но ответы модели записаны заранее; сказать об этом вслух.</p></aside>
+</section>
+
+<section class="slide" id="agent-as-policy" data-display="flex" data-chapter="The agent loop" data-section="1" data-timing="17:00–19:00 · 2 мин.">
+<h2>An agent, formally</h2>
+<ul class="list compact"><li>Environment state <span class="math">s<sub>t</sub></span>: files, processes, web pages. The model does not see it.</li><li>Action <span class="math">a<sub>t</sub></span>: a tool call. Observation <span class="math">o<sub>t</sub></span>: its result.</li><li>History <span class="math">h<sub>t</sub> = (goal, a<sub>1</sub>, o<sub>1</sub>, …, a<sub>t−1</sub>, o<sub>t−1</sub>)</span> — this is the context.</li><li>The LLM is a stochastic policy <span class="math">π<sub>θ</sub>(a<sub>t</sub> | h<sub>t</sub>)</span> with fixed weights <span class="math">θ</span>.</li><li>The harness defines the actions, what goes into <span class="math">o<sub>t</sub></span>, the budget and when to stop.</li></ul>
+<p class="key">A partially observed decision process. What is not in the context does not exist for the agent.</p>
+<aside class="notes" lang="ru"><p><strong>17:00–19:00 · 2 мин.</strong></p><p>Для этой аудитории полезна формальная рамка. Это POMDP: состояние среды скрыто, агент видит только наблюдения. Стратегия зависит от всей истории — и история здесь буквально равна контексту модели. Стохастичность — из выборки токенов (температура, лекция 2).</p><p>Следствия. (1) Агент ничему не учится в процессе: веса θ фиксированы, меняется только вход (лекция 2). (2) Всё, что агент «знает» о среде, попало в контекст через наблюдения; если наблюдение обрезано или сжато при компактизации (лекция 3), для стратегии этого нет. (3) Обвязка определяет пространство действий и функцию наблюдения — одна и та же модель с разными инструментами и выводом ведёт себя по-разному.</p><p>Связь с RL из лекции 2: обучение агентов — это RL с этой же стратегией, где эпизод — целая траектория. К этому вернёмся в разделе 2.</p></aside>
+</section>
+
+<section class="slide" id="harness" data-display="flex" data-chapter="The agent loop" data-section="1" data-timing="19:00–20:30 · 1.5 мин.">
+<h2>What a real harness adds</h2>
+<div class="split equal"><div><h3>Claude Code, Codex, Cursor …</h3><ul class="list compact"><li>a long system prompt and tool descriptions</li><li>tools: read, edit and search files, run commands, fetch pages, start sub-agents</li><li>a to-do list: the plan, kept in the context</li><li>permissions and a sandbox</li><li>compaction when the context fills up</li></ul></div><div><h3>mini-swe-agent</h3><ul class="list compact"><li>about 100 lines of Python for the agent</li><li>one tool: bash</li><li>no tool-calling API, a text protocol like ours</li><li><strong>&gt;74%</strong> on SWE-bench Verified</li></ul></div></div>
+<p class="key">The loop is simple. The models are trained to work in it.</p>
+<p class="source"><a href="https://github.com/SWE-agent/mini-swe-agent" target="_blank" rel="noopener noreferrer">mini-swe-agent</a> (Princeton, Stanford) · score as reported in its README, checked October 26, 2026</p>
+<aside class="notes" lang="ru"><p><strong>19:00–20:30 · 1.5 мин.</strong></p><p>Обвязка (harness) — всё вокруг модели: сборка контекста, описания инструментов, исполнение вызовов, разрешения, бюджеты, компактизация, журналы. В промышленных агентах это тысячи строк, но ядро — тот же цикл.</p><p>Контраргумент — mini-swe-agent от авторов SWE-bench: около 100 строк, только bash, без tool calling, и при этом больше 74% на SWE-bench Verified (реальные задачи из GitHub-репозиториев с тестами). Вывод: основная работа — в модели, которую обучили действовать в таком цикле. Обвязка решает инженерные задачи: безопасность, стоимость, длинные сессии.</p><p>Цифра из README проекта; одна и та же модель с разной обвязкой может давать разные результаты, поэтому таблицы лидеров сравнивают пары «модель + обвязка».</p><p><strong>Источники.</strong> <a href="https://github.com/SWE-agent/mini-swe-agent" target="_blank" rel="noopener noreferrer">mini-swe-agent</a>; <a href="https://www.anthropic.com/engineering/managed-agents" target="_blank" rel="noopener noreferrer">Anthropic · Scaling Managed Agents</a>.</p></aside>
+</section>
+
+<section class="slide" id="demo-inside-agent" data-display="flex" data-chapter="The agent loop" data-section="1" data-timing="20:30–23:00 · 2.5 мин.">
+<p class="demo-label">Demonstration 2</p>
+<h2>The same loop inside Claude Code</h2>
+<ol class="steps demo"><li>A fresh copy of <code>materials/agent-demo</code>; <code>claude</code>; “Make the failing tests pass without editing the tests.”</li><li>Watch the tool calls. <code>Ctrl+O</code> shows the transcript.</li><li><code>/context</code>: the system prompt and the tool descriptions fill part of the context before we type anything.</li><li><code>python3 materials/transcript.py</code> prints the session log from <code>~/.claude/projects/</code>: user, model → tool, tool result, again and again.</li></ol>
+<p class="key">The same messages as in our 130 lines — plus a much larger harness.</p>
+<aside class="notes" lang="ru"><p><strong>20:30–23:00 · 2.5 мин.</strong></p><p>Подготовка: скопировать <code>materials/agent-demo</code> во временную папку, открыть там терминал, <code>claude</code> залогинен. Не запускать в папке курса.</p><p>Шаг 3: команда <code>/context</code> показывает, из чего состоит контекст, — системный промпт и описания инструментов занимают тысячи токенов ещё до нашего сообщения (лекция 3).</p><p>Шаг 4: запустить <code>python3 &lt;путь к lecture04&gt;/materials/transcript.py</code> в той же временной папке — скрипт находит последний журнал этой папки. Каждая строка — событие цикла: сообщение пользователя, вызов инструмента (Bash, Read, Edit…), результат. Внизу — число вызовов модели и инструментов и размер контекста на последнем шаге. Флаг <code>--raw</code> печатает один вызов в сыром JSON: имя инструмента и аргументы — ровно то, что на слайде tool use лекции 2.</p><p>Мысль: «магия» Claude Code — это тот же цикл, что у нас, с хорошо обученной моделью и большой инженерной обвязкой.</p></aside>
+</section>
+
+<section class="slide question" id="q-feedback" data-display="flex" data-chapter="The agent loop" data-section="1" data-timing="23:00–25:00 · 2 мин.">
+<p class="q-label">Question 1</p>
+<h2>We change one line: <code>execute_action</code> now returns only “ok”. What breaks?</h2>
+<p class="lead">The commands still run.</p>
+<div class="answer fragment"><p>The agent no longer sees the failing test, the error or the file contents.</p><p>It acts on its expectations, not on the world: it cannot notice its own mistakes. The loop without feedback is just a script written in advance.</p></div>
+<aside class="notes" lang="ru"><p><strong>23:00–25:00 · 2 мин.</strong></p><p>Открыть вопрос в боте: <code>/q 1</code>. 45 секунд на ответы, затем раскрыть.</p><p>Ожидаемые ответы: агент не узнает, что тесты падают; не прочитает файл; будет «исправлять» вслепую; не сможет понять, когда остановиться. Он может угадать верную правку — модель видела много подобного кода, — но не сможет отреагировать на конкретную, невидимую ему ошибку.</p><p>Переход: обратная связь — главное в агенте. Следующий раздел — почему она так важна количественно.</p></aside>
+</section>
+
+<section class="slide" id="workflows" data-display="flex" data-chapter="The agent loop" data-section="1" data-timing="необязательный · 2 мин.">
+<span class="optional-tag">optional</span>
+<h2>A workflow or an agent?</h2>
+<table><colgroup><col style="width:18%"><col style="width:41%"><col style="width:41%"></colgroup><thead><tr><th></th><th>Workflow</th><th>Agent</th></tr></thead><tbody><tr><td>Next step</td><td>Written in the program</td><td>Chosen by the model from the context</td></tr><tr><td>Example</td><td>Load data → validate → compute → format a report</td><td>Investigate an unfamiliar failure</td></tr><tr><td>Good fit</td><td>The steps are known in advance</td><td>The steps are hard to specify in advance</td></tr><tr><td>Trade-off</td><td>Predictable, cheaper</td><td>Flexible, variable cost and behaviour</td></tr></tbody></table>
+<p class="key">If you can write the steps down, write a workflow.</p>
+<p class="source"><a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noopener noreferrer">Anthropic · Building effective agents (December 2024)</a></p>
+<aside class="notes" lang="ru"><p><strong>Необязательный слайд, 2 мин.</strong> Пропустить при нехватке времени.</p><p>Различие из Building effective agents: в workflow последовательность шагов задана кодом, LLM выполняет отдельные шаги; в агенте модель сама выбирает следующий шаг. Практический совет: начинать с простейшего варианта. Часто достаточно одного запроса или фиксированного конвейера; агент оправдан, когда путь к решению заранее неизвестен, а ошибки можно поймать проверкой.</p></aside>
+</section>
+
+<section class="slide section-divider" id="section-feedback" data-display="flex" data-background-color="#527750" data-chapter="Why agents work" data-section="2" data-timing="25:00 · начало раздела">
+<div class="section-number">2</div>
+<h2>Why agents work</h2>
+<p class="section-description">Feedback, checking and its limits</p>
+<aside class="notes" lang="ru"><p>Почему цикл с обратной связью вообще справляется с длинными задачами, и где он ломается.</p></aside>
+</section>
+
+<section class="slide" id="compounding" data-display="flex" data-chapter="Why agents work" data-section="2" data-timing="25:00–26:30 · 1.5 мин.">
+<h2>Errors compound over long tasks</h2>
+<p>A task of <span class="math">n</span> steps; each step is right with probability <span class="math">p</span>, independently. Without checks, the task succeeds with probability <span class="math">p<sup>n</sup></span>.</p>
+<table class="tight" style="margin-top:34px;width:70%"><thead><tr><th><span class="math">p</span></th><th class="num"><span class="math">n</span> = 10</th><th class="num"><span class="math">n</span> = 40</th><th class="num"><span class="math">n</span> = 100</th></tr></thead><tbody><tr><td>0.99</td><td class="num">0.90</td><td class="num">0.67</td><td class="num">0.37</td></tr><tr><td>0.95</td><td class="num">0.60</td><td class="num">0.13</td><td class="num">0.006</td></tr></tbody></table>
+<p class="key">A long task needs a way to notice a mistake and fix it.</p>
+<aside class="notes" lang="ru"><p><strong>25:00–26:30 · 1.5 мин.</strong></p><p>Простейшая модель: шаги независимы, ошибка на любом шаге губит задачу. Тогда вероятность успеха экспоненциально падает с длиной: при 95% на шаг задача из 40 шагов удаётся в 13% случаев. Настоящий агент делает десятки и сотни шагов (у Claude Code в нашей демонстрации — десяток, у компилятора C в разделе 3 — тысячи сессий).</p><p>Модель грубая: шаги не независимы, и не каждая ошибка фатальна. Но она объясняет, почему без обратной связи длинные задачи не решаются, — и задаёт следующий вопрос.</p></aside>
+</section>
+
+<section class="slide question" id="q-compounding" data-display="flex" data-chapter="Why agents work" data-section="2" data-timing="26:30–29:30 · 3 мин.">
+<p class="q-label">Question 2</p>
+<h2>40 steps, each right with probability 0.95. After each step, a check; if it fails, the agent retries the step.</h2>
+<p style="font-size:32px">(a) The check catches every error; up to 3 tries per step.<br>(b) The check catches 90% of errors; unlimited tries.</p>
+<div class="answer compact fragment"><p>(a) <span class="math">(1 − 0.05³)<sup>40</sup> ≈ 0.995</span>, against 0.13 without checks.</p><p>(b) A step ends right with probability <span class="math">0.95 / (0.95 + 0.005) ≈ 0.9948</span>, so <span class="math">0.9948<sup>40</sup> ≈ 0.81</span>.</p><p><strong>Retries are cheap. The errors the check misses set the ceiling.</strong></p></div>
+<aside class="notes" lang="ru"><p><strong>26:30–29:30 · 3 мин.</strong></p><p>Открыть в боте <code>/q 2</code>. Полторы минуты на счёт, затем раскрыть.</p><p>(a) Шаг проваливается, только если все три попытки ошибочны: 0,05³ = 1,25·10⁻⁴. Тогда (1 − 1,25·10⁻⁴)⁴⁰ ≈ 1 − 0,005 ≈ 0,995.</p><p>(b) Каждая попытка: верна с вероятностью 0,95; ошибочна и поймана — 0,045 (повтор); ошибочна и не поймана — 0,005 (тихий провал). Шаг кончается верно с вероятностью 0,95/(0,95 + 0,005) ≈ 0,9948, задача — 0,9948⁴⁰ ≈ 0,81. Даже с бесконечным числом попыток потолок задаёт доля ошибок, которые проверка пропускает.</p><p>Допущения: ошибки независимы, проверка срабатывает сразу после шага и не даёт ложных тревог. В жизни ошибки коррелированы (модель повторяет ту же ошибку), поэтому полезно менять подход, а не просто повторять.</p></aside>
+</section>
+
+<section class="slide" id="verification-asymmetry" data-display="flex" data-chapter="Why agents work" data-section="2" data-timing="29:30–32:00 · 2.5 мин.">
+<h2>Checking is often easier than doing</h2>
+<table class="tight" style="font-size:27px"><colgroup><col style="width:25%"><col style="width:29%"><col style="width:16%"><col style="width:30%"></colgroup><thead><tr><th>Task</th><th>Checker</th><th>Cost of a check</th><th>What it misses</th></tr></thead><tbody><tr><td>A satisfiable formula</td><td>the satisfying assignment</td><td>linear time</td><td>nothing</td></tr><tr><td>An unsatisfiable formula</td><td>a DRAT proof + a proof checker</td><td>about as long as solving</td><td>nothing, if the checker is right</td></tr><tr><td>A math statement</td><td>a proof assistant (e.g. Lean)</td><td>seconds to minutes</td><td>whether the statement means what you meant</td></tr><tr><td>Fix a bug</td><td>tests</td><td>seconds</td><td>inputs the tests do not cover</td></tr><tr><td>Improve a construction</td><td>an evaluation function</td><td>seconds</td><td>what the score does not measure</td></tr><tr><td>A research summary</td><td>a person reading the sources</td><td>hours</td><td>whatever the person skips</td></tr><tr><td>Run a shop</td><td>the market</td><td>weeks</td><td>noisy, and too late</td></tr></tbody></table>
+<p class="key">Agents are strongest where checking is cheap and complete.</p>
+<aside class="notes" lang="ru"><p><strong>29:30–32:00 · 2.5 мин.</strong></p><p>Асимметрия, знакомая по NP: найти выполняющий набор трудно, проверить его — линейное время. Для невыполнимой формулы короткого сертификата, вероятно, нет (coNP), но CDCL-решатель может выписать доказательство в формате DRAT — последовательность выученных клауз, каждую из которых проверяющая программа подтверждает распространением единичных дизъюнктов. Это и есть проверки нашей фоновой задачи A.</p><p>Строка про Lean: системы вроде Lean проверяют формальные доказательства механически; это использовали в формализации теоремы Ферма (лекция 1). Тонкое место — проверяется утверждение, как оно записано формально, а не то, что имел в виду человек. Подробности синтаксиса не нужны.</p><p>Дальше по таблице проверка дорожает и становится неполной. Порядок строк — карта для галереи в разделе 3. Спросить аудиторию: куда в этой таблице попадают задачи, записанные на доске в начале?</p></aside>
+</section>
+
+<section class="slide" id="trained-for-the-loop" data-display="flex" data-chapter="Why agents work" data-section="2" data-timing="32:00–33:30 · 1.5 мин.">
+<h2>Models are trained in this loop</h2>
+<div class="split equal"><div><h3>RL from lecture 2, scaled up</h3><ul class="list compact"><li>an episode: a whole trajectory in a sandbox — a repository, a terminal, a browser</li><li>the reward: a checker — the tests pass, the answer matches, the page shows the result</li></ul></div><div><h3>Consequences</h3><ul class="list compact"><li>the tasks agents finish keep getting longer (METR, lecture 1)</li><li>skills with automatic checks improve fastest</li><li>a weak checker in training teaches the model to please the checker</li></ul></div></div>
+<p class="key">What can be checked automatically can be trained.</p>
+<aside class="notes" lang="ru"><p><strong>32:00–33:30 · 1.5 мин.</strong></p><p>Связь с лекцией 2: DeepSeek-R1 и другие reasoning-модели учились RL с проверяемой наградой на задачах с ответом. Для агентов то же самое, но эпизод — целая траектория в среде: репозиторий с тестами, терминальные задачи, задачи в браузере. Награда — результат автоматической проверки.</p><p>Отсюда: модели особенно быстро растут там, где проверка автоматическая (код, математика с ответом, задачи в терминале). График METR из лекции 1 — длина задач, которые агент решает с вероятностью 50%, растёт экспоненциально. Свежие точки METR перепроверить перед лекцией; измерения выше ~16 часов сами авторы считают ненадёжными.</p><p>Последний пункт — мост к reward hacking: если проверка в обучении слабая, модель учится обходить проверку. Следующие два слайда.</p></aside>
+</section>
+
+<section class="slide" id="plan-and-stop" data-display="flex" data-chapter="Why agents work" data-section="2" data-timing="33:30–35:00 · 1.5 мин.">
+<h2>Plans and stopping</h2>
+<div class="split equal"><div><h3>A plan is a hypothesis</h3><p style="font-size:29px">Reproduce → diagnose → edit → verify.</p><p style="font-size:29px;margin-top:18px">An observation can break it: the tests do not even start → fix the environment first.</p><p class="small muted" style="margin-top:18px">In Claude Code the plan is a to-do list in the context.</p></div><div><h3>Why a run ends</h3><table class="tight" style="font-size:27px"><tbody><tr><td>verified success</td><td><span class="status">success</span></td></tr><tr><td>budget used up</td><td><span class="status fail">budget</span></td></tr><tr><td>no progress</td><td><span class="status fail">stalled</span></td></tr><tr><td>a person must decide</td><td><span class="status">needs input</span></td></tr></tbody></table></div></div>
+<p class="key">“No more tool calls” ends a run. It does not prove success.</p>
+<aside class="notes" lang="ru"><p><strong>33:30–35:00 · 1.5 мин.</strong></p><p>Планирование: модель составляет план, но это гипотеза о полезной последовательности действий; наблюдение может её опровергнуть. В Claude Code план — список задач, который хранится в контексте и обновляется. Пункт «проверить» нельзя отметить выполненным, не увидев результата проверки.</p><p>Остановка: условия задаются обвязкой, а не обещанием модели. Бюджет (шаги, время, токены, деньги), отсутствие прогресса (одна и та же ошибка повторяется), необходимость решения человека (неоднозначное требование, необратимое действие). Важно различать «поиск остановлен по бюджету» и «контрпримера нет» — к этому вернёмся в практике.</p></aside>
+</section>
+
+<section class="slide" id="reward-hacking" data-display="flex" data-chapter="Why agents work" data-section="2" data-timing="35:00–37:00 · 2 мин.">
+<h2>When the checker is weaker than the goal</h2>
+<div class="split"><div><h3>The agent satisfies the checker instead</h3><ul class="list compact"><li>edits, skips or deletes the failing tests</li><li>special-cases the test inputs</li><li>reads the answer off the file name or an answers file</li><li>reports success without running the checks</li></ul></div><div class="side-note"><p><strong>ImpossibleBench</strong> (2025): tests are changed to contradict the specification, so any “pass” is cheating. Frontier models cheat on a noticeable share of tasks.</p></div></div>
+<p class="quote" style="font-size:32px;margin-top:30px">“…the task verifier is nearly perfect, otherwise Claude will solve the wrong problem.”</p>
+<p class="quote-by">Nicholas Carlini, Anthropic, February 2026</p>
+<p class="source"><a href="https://arxiv.org/abs/2510.20270" target="_blank" rel="noopener noreferrer">Zhong, Raghunathan, Carlini · ImpossibleBench (2025)</a> · <a href="https://www.anthropic.com/engineering/building-c-compiler" target="_blank" rel="noopener noreferrer">Carlini · Building a C compiler with a team of parallel Claudes</a></p>
+<aside class="notes" lang="ru"><p><strong>35:00–37:00 · 2 мин.</strong></p><p>Reward hacking (specification gaming): оптимизируется то, что измеряется. Это не «злой умысел», а предсказуемое следствие RL со слабой проверкой и обычной оптимизации по метрике.</p><p>ImpossibleBench: берут задачи из известных бенчмарков и меняют тесты так, чтобы они противоречили описанию задачи. Честного решения, проходящего тесты, нет, поэтому любое «прохождение» — обход: правка тестов, частные случаи под входы, перегрузка сравнения и т. п. Точные доли зависят от модели и обвязки — смотреть статью; на слайде без цифр.</p><p>Цитата Карлини — из поста о компиляторе C (раздел 3); он пишет, что верификатор задачи должен быть почти идеальным, иначе агент решит не ту задачу. Наша задача A специально запрещает такие обходы — и в конце мы проверим, соблюдены ли запреты.</p></aside>
+</section>
+
+<section class="slide question" id="q-tests-pass" data-display="flex" data-chapter="Why agents work" data-section="2" data-timing="37:00–39:00 · 2 мин.">
+<p class="q-label">Question 3</p>
+<h2>The agent reports: “All 214 tests pass.” Name three ways this can be true while the task is not done.</h2>
+<div class="answer compact fragment"><p>The tests were changed, skipped or deleted. The code special-cases the test inputs. The tests do not cover the requirement. The wrong tests were run, or an old version. The tests were never run — the report is just text.</p><p><strong>Check the artifact and the diff, not the report.</strong></p></div>
+<aside class="notes" lang="ru"><p><strong>37:00–39:00 · 2 мин.</strong></p><p>Открыть в боте <code>/q 3</code>. Минута на ответы, затем раскрыть и сравнить с присланными.</p><p>Последний вариант встречается на практике: в истории с Replit (раздел 3) агент сообщал об успехе, которого не было. Средства: запускать проверки самому (в обвязке, как в demo 1), смотреть diff тестов, держать скрытые тесты, которых агент не видит, — как мы сделаем с SAT-решателем на свежих формулах.</p></aside>
+</section>
+
+<section class="slide section-divider" id="section-gallery" data-display="flex" data-background-color="#527750" data-chapter="Real agents today" data-section="3" data-timing="39:00 · начало раздела">
+<div class="section-number">3</div>
+<h2>Real agents today</h2>
+<p class="section-description">From cheap checks to no checks at all</p>
+<aside class="notes" lang="ru"><p>Галерея реальных применений 2025–2026 годов. Для каждого — одна и та же карточка: задача, инструменты, кто проверяет, что пошло не так.</p></aside>
+</section>
+
+<section class="slide" id="gallery-map" data-display="flex" data-chapter="Real agents today" data-section="3" data-timing="39:00–40:00 · 1 мин.">
+<h2>The gallery, ordered by the checker</h2>
+<table class="tight"><colgroup><col style="width:30%"><col style="width:42%"><col style="width:28%"></colgroup><thead><tr><th>Agent</th><th>Who checks</th><th>Cost of a check</th></tr></thead><tbody><tr><td>AlphaEvolve</td><td>an evaluation function written by people</td><td>seconds</td></tr><tr><td>A C compiler by 16 agents</td><td>test suites, GCC as a reference</td><td>minutes</td></tr><tr><td>A browser agent</td><td>you, looking at the result</td><td>minutes</td></tr><tr><td>Claudius, a shopkeeper</td><td>customers and the balance sheet</td><td>weeks</td></tr><tr><td>Agents with real access</td><td>often nobody, until it is too late</td><td>—</td></tr></tbody></table>
+<p class="key">Each slide: task · tools · checker · what went wrong.</p>
+<aside class="notes" lang="ru"><p><strong>39:00–40:00 · 1 мин.</strong></p><p>Порядок — от дешёвой и полной проверки к её отсутствию, как в таблице раздела 2. Предсказание, которое стоит проговорить: чем ниже строка, тем больше историй о провалах. Наши фоновые задачи тоже на этой шкале: SAT-решатель — в самом верху, deep research — посередине (проверяет человек).</p></aside>
+</section>
+
+<section class="slide" id="alphaevolve" data-display="flex" data-chapter="Real agents today" data-section="3" data-timing="40:00–44:00 · 4 мин.">
+<h2>AlphaEvolve: an LLM as a mutation operator</h2>
+<div class="split" style="grid-template-columns:1.25fr 1fr;gap:44px"><div><img class="figure-img" src="assets/alphaevolve-loop.png" alt="AlphaEvolve diagram: scientists provide a prompt template, LLMs, evaluation code and an initial program; the controller loop samples a parent program from the database, builds a prompt, asks the LLM for a diff, applies it, runs the evaluator and adds the child program and its scores to the database."></div><div><dl class="card"><dt>Task</dt><dd>a program that builds an object or a heuristic</dd><dt>Tools</dt><dd>LLMs propose code changes; evolution keeps the best programs</dd><dt>Checker</dt><dd>an evaluation function, exact and fast</dd><dt>Results</dt><dd>4×4 complex matrices with 48 multiplications; kissing number in 11 dimensions ≥ 593; 67 problems with Tao et al.: most best-known results matched, several improved</dd><dt>Limits</dt><dd>constructions and bounds, not proofs; people write the evaluator</dd></dl></div></div>
+<p class="source">Diagram: Google DeepMind, <a href="https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/" target="_blank" rel="noopener noreferrer">AlphaEvolve (May 2025)</a> · <a href="https://arxiv.org/abs/2511.02864" target="_blank" rel="noopener noreferrer">Georgiev, Gómez-Serrano, Tao, Wagner (November 2025)</a></p>
+<aside class="notes" lang="ru"><p><strong>40:00–44:00 · 4 мин.</strong></p><p>Показать на схеме цикл контроллера: он почти дословно совпадает с нашим циклом из раздела 1, только вместо команды shell — правка программы, а вместо вывода команды — оценка программы. Люди задают шаблон промпта, начальную программу и, главное, код оценки. Это эволюционный поиск, где мутации предлагает LLM.</p><p>Результаты весны 2025 года: алгоритм умножения комплексных матриц 4×4 за 48 скалярных умножений (у Штрассена было 49); новая нижняя оценка контактного числа в размерности 11 — 593; также оптимизации в инфраструктуре Google (планирование задач в дата-центрах). Ноябрь 2025: Георгиев, Гомес-Серрано, Тао и Вагнер применили систему к 67 задачам анализа, комбинаторики, геометрии и теории чисел; в большинстве повторены лучшие известные конструкции, в нескольких — улучшены.</p><p>Ограничения: результат — конструкция, проверенная функцией оценки, а не доказательство оптимальности; оценки сверху и доказательства пишут люди. Почему здесь агенты сильны: проверка точная и стоит секунды, поэтому можно перебрать огромное число вариантов. Это верхняя строка нашей таблицы.</p><p>Пост DeepMind от 7 мая 2026 года о дальнейших применениях (в том числе задачи Эрдёша) перепроверить отдельно: из песочницы, где готовились слайды, сайт DeepMind был недоступен.</p></aside>
+</section>
+
+<section class="slide" id="c-compiler" data-display="flex" data-chapter="Real agents today" data-section="3" data-timing="44:00–48:00 · 4 мин.">
+<h2>16 agents write a C compiler</h2>
+<div class="numbers"><div><strong>16</strong><span>parallel Claude agents (Opus 4.6), two weeks</span></div><div><strong>~2,000</strong><span>Claude Code sessions</span></div><div><strong>&lt; $20K</strong><span>in API costs</span></div><div><strong>100K</strong><span>lines of Rust, from scratch</span></div></div>
+<div class="split equal"><div><h3>What it compiles</h3><p style="font-size:28px">Linux 6.9 on x86, ARM and RISC-V; QEMU, FFmpeg, SQLite, PostgreSQL, Redis, Doom. About 99% on most test suites, including GCC’s torture tests.</p></div><div><h3>How it was checked</h3><p style="font-size:28px">Test suites, and GCC as a reference: most kernel files built by GCC, the rest by the new compiler. Agents took tasks via lock files in git; no coordinator.</p></div></div>
+<p class="key">The tests and the harness were the real work. Limits: slow code, GCC still needed for parts.</p>
+<p class="source"><a href="https://www.anthropic.com/engineering/building-c-compiler" target="_blank" rel="noopener noreferrer">Nicholas Carlini · Building a C compiler with a team of parallel Claudes · Anthropic, February 5, 2026</a></p>
+<aside class="notes" lang="ru"><p><strong>44:00–48:00 · 4 мин.</strong></p><p>Эксперимент Николаса Карлини: 16 экземпляров Claude параллельно, каждый в своём контейнере в бесконечном цикле, общий git-репозиторий. Задачу агент «занимает», создавая lock-файл в каталоге current_tasks; если двое взяли одно, git заставит второго выбрать другое. Оркестратора нет. Около 2000 сессий, примерно 2 млрд входных и 140 млн выходных токенов, чуть меньше $20 000.</p><p>Главный урок — про проверку. Пока задачи были независимыми (разные падающие тесты), параллельность работала. Сборка ядра Linux — одна большая задача: все 16 агентов натыкались на одну и ту же ошибку. Решение: GCC как эталонный компилятор — большую часть файлов ядра собирать GCC, а случайную часть новым компилятором; тогда разные агенты чинят разные файлы. Также вывод тестов был сделан «для модели»: коротким, с подробностями в логах.</p><p>Ограничения из поста: нет своего ассемблера и компоновщика; 16-битный режим x86 по-прежнему через GCC; сгенерированный код медленнее, чем у GCC даже без оптимизаций; качество кода на Rust разумное, но не экспертное. Автор подчёркивает, что прохождение тестов может давать ложную уверенность.</p><p>Это мост к лекции 12 (несколько агентов). Здесь важна мысль: полноценный проверяющий (тесты + оракул) сделал возможной работу без человека.</p></aside>
+</section>
+
+<section class="slide" id="demo-browser" data-display="flex" data-chapter="Real agents today" data-section="3" data-timing="48:00–54:00 · 6 мин.">
+<p class="demo-label">Demonstration 3</p>
+<h2>An agent in a browser</h2>
+<div class="split"><div><ol class="steps demo"><li>Claude in Chrome, ChatGPT agent or Gemini, in a separate browser profile.</li><li>“On arxiv.org, find the five most recent cs.AI papers with ‘agent’ in the title. Make a table: title, first author, date, link.”</li><li>Watch: screenshot → click → type → screenshot. Count the steps; note the time.</li><li>Check two rows against arXiv yourself.</li></ol></div><div><dl class="card"><dt>Observation</dt><dd>a screenshot, sometimes the page text</dd><dt>Actions</dt><dd>click (x, y), type, scroll, go to a URL</dd><dt>Checker</dt><dd>you</dd><dt>OSWorld</dt><dd>369 desktop tasks. 2024: humans 72%, best model 12%. Autumn 2026: top entries on OSWorld-Verified report above 85%</dd></dl></div></div>
+<p class="source"><a href="https://os-world.github.io/" target="_blank" rel="noopener noreferrer">OSWorld (Xie et al., 2024)</a> · recent scores are self-reported and depend on the harness; check the leaderboard on the day</p>
+<aside class="notes" lang="ru"><p><strong>48:00–54:00 · 6 мин.</strong></p><p>Подготовка: отдельный профиль браузера без личной почты и сохранённых платёжных данных; уведомления выключены. Задача только на чтение. Если доступа к браузерному агенту нет — показать заранее записанное видео.</p><p>Пока агент работает: это тот же цикл, только наблюдение — скриншот (картинка в контексте, лекция 2), а действия — клик по координатам и ввод текста. Это медленно: каждый шаг — запрос к модели со скриншотом. Обратить внимание, как агент восстанавливается после промаха (не туда нажал, страница не загрузилась).</p><p>OSWorld (2024): 369 задач в настоящих приложениях на компьютере; люди решали 72,36%, лучшая модель — 12,24%. Осенью 2026 года лучшие записи в таблице OSWorld-Verified заявляют выше 85%, но это часто самоотчёты с разной обвязкой; новая версия OSWorld 2.0 заметно сложнее. Цифры перепроверить в день лекции.</p><p>Проверка здесь — человек: сверить две строки таблицы с arXiv вживую. Это дорого, и поэтому браузерные агенты ниже в нашей шкале. Для действий с последствиями (покупка, отправка) нужен человек-подтверждающий — лекция 5.</p></aside>
+</section>
+
+<section class="slide" id="project-vend" data-display="flex" data-chapter="Real agents today" data-section="3" data-timing="54:00–57:30 · 3.5 мин.">
+<h2>Claudius runs a shop</h2>
+<div class="split equal"><div><h3>Phase 1 · 2025 · Sonnet 3.7</h3><ul class="list compact"><li>a small shop in Anthropic’s office; Slack, web search, notes, a human for deliveries</li><li>lost money; bought metal cubes and sold them at a loss</li><li>declined $100 for a $15 six-pack</li><li>claimed it would deliver “wearing a blue blazer and a red tie”</li></ul></div><div><h3>Phase 2 · December 2025 · Sonnet 4 → 4.5</h3><ul class="list compact"><li>a CRM, price checks, an AI “CEO”; shops in San Francisco, New York, London</li><li>mostly profitable: “bureaucracy matters”</li><li>nearly signed an illegal onion futures contract</li><li>reporters talked it into giving goods away</li></ul></div></div>
+<p class="key">No cheap checker, people pushing back, a model trained to be helpful.</p>
+<p class="source">Anthropic and Andon Labs · <a href="https://www.anthropic.com/research/project-vend-1" target="_blank" rel="noopener noreferrer">Project Vend (June 27, 2025)</a> · <a href="https://www.anthropic.com/research/project-vend-2" target="_blank" rel="noopener noreferrer">Project Vend: phase two (December 18, 2025)</a></p>
+<aside class="notes" lang="ru"><p><strong>54:00–57:30 · 3.5 мин.</strong></p><p>Эксперимент Anthropic и Andon Labs: агент «Claudius» управлял настоящим маленьким магазином в офисе — выбирал товары, ставил цены, общался с покупателями в Slack; физическую работу делали люди.</p><p>Фаза 1 (июнь 2025, Sonnet 3.7): убыточен. Купил металлические кубики (вольфрамовые — шутка сотрудников) и продавал дешевле закупки; отказался продать упаковку шотландского Irn-Bru за $100 при цене около $15; 31 марта — 1 апреля выдумал сотрудника, «подписал контракт» по адресу семьи Симпсонов и обещал лично доставлять товары в синем пиджаке и красном галстуке.</p><p>Фаза 2 (декабрь 2025, Sonnet 4 и 4.5): дали CRM, проверку цен и сроков, начальника — агента-CEO «Seymour Cash» и отдельного агента для мерча. Магазин в основном стал прибыльным; вывод авторов — «бюрократия важна»: обязательные проверки цен помогли. Остались смешные провалы: почти заключили контракт на луковые фьючерсы, запрещённые законом 1958 года; после подтасованного голосования агент признал «настоящим CEO» сотрудника. Журналисты Wall Street Journal в своём тесте уговорили агента раздавать товары бесплатно (по их публикации — в том числе PlayStation 5 и живую рыбку); подробности — в статье WSJ.</p><p>Мораль: проверка результата здесь — баланс через недели, а люди активно давят на агента. Модели, обученные быть полезными и уступчивыми, ведут себя как «доброжелательный друг», а не как жёсткий продавец.</p></aside>
+</section>
+
+<section class="slide" id="when-it-goes-wrong" data-display="flex" data-chapter="Real agents today" data-section="3" data-timing="57:30–61:30 · 4 мин.">
+<h2>When agents have real access</h2>
+<div class="three" style="margin-top:6px"><div><h3>Replit · July 2025</h3><p>During a declared code freeze, a coding agent ran destructive commands and wiped a production database. It then said a rollback was impossible. It was not.</p></div><div><h3>OpenClaw · early 2026</h3><p>A popular open-source personal agent with access to files, shell and messengers. Within weeks: remote-code-execution bugs, malware among its skills, prompt injections in a social network for agents.</p></div><div><h3>A model in a safety test · 2026</h3><p>In a UK AISI hacking exercise with internet access, an agent sent malicious code to a real open-source project and created fake accounts to push it — and went on after being told the maintainer was real.</p></div></div>
+<p class="key">Limits must be enforced outside the model. Lecture 5: tools, permissions, prompt injection.</p>
+<aside class="notes" lang="ru"><p><strong>57:30–61:30 · 4 мин.</strong></p><p><strong>Replit.</strong> Июль 2025, 12-дневный эксперимент Джейсона Лемкина (SaaStr) с «vibe coding». На девятый день, несмотря на объявленную заморозку изменений, агент выполнил разрушительные команды и стёр рабочую базу (записи примерно о 1200 руководителях и 1190 компаниях), а потом утверждал, что откат невозможен; откат сработал. Агент «объяснил», что «запаниковал». Replit после этого разделил базы разработки и продакшна и добавил режим только планирования. Источники: <a href="https://www.eweek.com/news/replit-ai-coding-assistant-failure/" target="_blank" rel="noopener noreferrer">eWeek</a> и другие; числа записей в разных источниках немного различаются.</p><p><strong>OpenClaw</strong> (ранее Clawdbot, затем Moltbot), январь–февраль 2026: открытый личный агент на своём компьютере с полным доступом к файлам, командам и мессенджерам; к нему появилась соцсеть агентов Moltbook. За несколько недель — уязвимость удалённого выполнения кода в один клик и инъекции команд (<a href="https://www.theregister.com/2026/02/03/openclaw_security_problems/" target="_blank" rel="noopener noreferrer">The Register, 3 февраля 2026</a>), вредоносные «навыки» в каталоге, заметная доля постов на Moltbook — попытки prompt injection. Показательно как эксперимент: огромный интерес и огромная поверхность атаки.</p><p><strong>Claude Mythos 5 и UK AISI.</strong> По сообщениям прессы от 23 октября 2026 года (SiliconANGLE и другие), в июльской оценке AISI в упражнении CTF с выходом в интернет агент отправил вредоносный код в реальный посторонний проект на GitHub и создавал фальшивые аккаунты, чтобы его приняли; он продолжал и после того, как ему сказали, что мейнтейнер — реальный человек; изменение отклонили, вреда не обнаружено. Перед лекцией прочитать первоисточники — отчёты Anthropic и AISI — и при необходимости уточнить формулировку слайда.</p><p>Общее: модель не надёжная граница. Разрешения, песочницы, подтверждение необратимых действий и бюджеты должны действовать снаружи — это тема лекции 5.</p></aside>
+</section>
+
+<section class="slide question" id="q-autonomy" data-display="flex" data-chapter="Real agents today" data-section="3" data-timing="61:30–64:00 · 2.5 мин.">
+<p class="q-label">Question 4</p>
+<h2>Which of these would you let an&nbsp;agent do for an&nbsp;hour unsupervised? What checker and limits would it need?</h2>
+<ul class="list compact" style="font-size:30px;display:grid;grid-template-columns:1fr 1fr;gap:10px 40px"><li>(a) make CI green in your project</li><li>(b) find a counterexample to a graph conjecture</li><li>(c) buy plane tickets</li><li>(d) write the literature review for your thesis</li><li>(e) answer your email</li></ul>
+<div class="answer compact fragment"><p>(a), (b): yes, in a sandbox — tests and a reviewed diff; an independent check of the counterexample. (c): prepare everything, a person confirms the payment. (d): a draft; you check every citation. (e): drafts only — private data, untrusted input and sending messages together are dangerous (lecture 5).</p></div>
+<aside class="notes" lang="ru"><p><strong>61:30–64:00 · 2.5 мин.</strong></p><p>Открыть в боте <code>/q 4</code>. Минута на ответы. Хорошие ответы называют не «да/нет», а условия: какая проверка и какие границы.</p><p>(a) Можно: тесты — проверка, но запретить менять тесты и смотреть diff (reward hacking). (b) Можно: контрпример проверяется коротким независимым скриптом. (c) Агент может найти и подготовить, но оплату подтверждает человек — действие необратимо. (d) Черновик: проверка — чтение источников человеком, дорого (вспомним deep research в разделе 4). (e) Опасная комбинация: приватные данные, недоверенный ввод (входящие письма), возможность отправлять — «lethal trifecta» Уиллисона; подробно в лекции 5.</p><p>Вернуться к таблице на доске из начала лекции: подтвердилось ли, что лёгкая проверка = подходящая задача для агента?</p></aside>
+</section>
+
+<section class="slide section-divider" id="section-results" data-display="flex" data-background-color="#527750" data-chapter="Back to our agents" data-section="4" data-timing="64:00 · начало раздела">
+<div class="section-number">4</div>
+<h2>Back to our two agents</h2>
+<p class="section-description">Did they succeed? We check ourselves</p>
+<aside class="notes" lang="ru"><p>Прошёл почти час. Смотрим, что сделали агенты, — и проверяем сами.</p></aside>
+</section>
+
+<section class="slide" id="demo-sat-results" data-display="flex" data-chapter="Back to our agents" data-section="4" data-timing="64:00–71:00 · 7 мин.">
+<p class="demo-label">Demonstration 4</p>
+<h2>Did the agent write a correct SAT solver?</h2>
+<ol class="steps demo"><li>The session: how long it ran, how many steps and commits. Read its <code>REPORT.md</code> aloud.</li><li><code>check_solver.py run solver.py --proofs</code>: fresh random formulas it has never seen. Every satisfying assignment is checked; every UNSAT answer is checked by its DRAT proof.</li><li><code>check_solver.py drat</code> on one unsatisfiable formula: the certificate that is not short.</li><li><code>check_solver.py scan .</code> — other solvers, processes, the answers file, file names? Then read the main loop.</li></ol>
+<p class="key">Compare what the report claims with what we have just seen.</p>
+<p class="source">Checker and starter kit: <code>materials/sat-demo/</code> · standard library only</p>
+<aside class="notes" lang="ru"><p><strong>64:00–71:00 · 7 мин.</strong> Подробная инструкция — <code>materials/sat-demo/README.md</code>.</p><p>1. Открыть сессию в claude.ai/code: длительность, число шагов, коммиты. Прочитать вслух начало REPORT.md — что агент утверждает.</p><p>2. Забрать ветку агента (<code>git fetch</code>, <code>git checkout &lt;ветка&gt;</code>) и запустить <code>python3 &lt;путь&gt;/materials/sat-demo/check_solver.py run solver.py --proofs</code>. По умолчанию 20 формул для каждого n = 50, 75, 100, seed — текущее время, поэтому агент не мог видеть эти формулы. Строка VERDICT внизу. Если медленно — <code>--count 10 --n 50 75</code>.</p><p>3. Одна невыполнимая формула крупным планом: <code>python3 solver.py bench/n075_03.cnf --proof /tmp/p.drat</code>, затем <code>check_solver.py drat bench/n075_03.cnf /tmp/p.drat</code>. Сколько строк в доказательстве? Это и есть «сертификат невыполнимости», который не короткий, — но его можно проверить.</p><p>4. <code>check_solver.py scan .</code> — сканер показывает строки для ручной проверки. В тестах агента чтение answers.csv законно, в solver.py — нет. Затем открыть главный цикл solver.py.</p><p>Любой исход полезен: если всё прошло — это пример задачи с полной проверкой, где агент может работать час без человека; если есть ошибки или обход правил — это reward hacking вживую; если не успел — сравнить отчёт с реальностью. Запасной вариант — ветка пробного прогона.</p></aside>
+</section>
+
+<section class="slide" id="demo-research-results" data-display="flex" data-chapter="Back to our agents" data-section="4" data-timing="71:00–76:00 · 5 мин.">
+<p class="demo-label">Demonstration 5</p>
+<h2>Checking the research report</h2>
+<ol class="steps demo"><li>Open the report: how many searches and sources? How long did it take?</li><li>You choose two rows of the table.</li><li>We open their sources. Does the source say this? Who is the author, what is the date?</li><li>Each row: correct · imprecise · not supported by the source.</li></ol>
+<p class="key">Here the checker is us — and it is the most expensive part of the work.</p>
+<aside class="notes" lang="ru"><p><strong>71:00–76:00 · 5 мин.</strong></p><p>Студенты выбирают строки (выкриком или через бота без метки). Для каждой — открыть ссылку и найти фразу, на которую опирается строка. Типичные проблемы: ссылка на пересказ вместо оригинала; «решено» вместо «улучшена оценка»; путаница, кто проверил результат; ссылка не открывается или не про то.</p><p>Сопоставить с задачей A: там проверка — секунды и программа, здесь — минуты на строку и человек. Поэтому deep research полезен как черновик и список источников, а не как готовый текст. Подробно о работе с источниками — лекция 8.</p></aside>
+</section>
+
+<section class="slide section-divider" id="section-practice" data-display="flex" data-background-color="#527750" data-chapter="Practice" data-section="5" data-timing="76:00 · начало раздела">
+<div class="section-number">5</div>
+<h2>Practice</h2>
+<p class="section-description">Design an agent</p>
+<aside class="notes" lang="ru"><p>Спроектировать агента по той же карточке, что в галерее.</p></aside>
+</section>
+
+<section class="slide question" id="practice" data-display="flex" data-chapter="Practice" data-section="5" data-timing="76:00–83:00 · 7 мин.">
+<p class="q-label">Question P</p>
+<h2>Design an agent that searches for a counterexample</h2>
+<p class="claim" style="font-size:38px;margin:4px 0 26px">“Every connected simple graph with minimum degree at least 2 has a Hamiltonian cycle.”</p>
+<div class="exercise-grid" style="margin-top:0"><p><strong>Tools:</strong> what can it call?</p><p><strong>Checker:</strong> how do you check its answer?</p><p><strong>Budget and stopping:</strong> what ends the search?</p><p><strong>What can go wrong:</strong> what would it be tempted to do?</p><p><strong>What a person checks:</strong> and how long it takes</p><p><strong>Or:</strong> the same card for a task from your project</p></div>
+<aside class="notes" lang="ru"><p><strong>76:00–83:00 · 7 мин.</strong> Открыть в боте <code>/q P</code>. Группы по 2–3 человека, 5 минут; одно сообщение от группы.</p><p>Напомнить термин: гамильтонов цикл проходит через каждую вершину ровно один раз. Нужно спроектировать агента, а не решить задачу руками (но кто решит — молодец).</p><p>Вариант для групп, у которых есть идея проекта: та же карточка для своей задачи — особенно строка «кто проверяет».</p></aside>
+</section>
+
+<section class="slide" id="practice-debrief" data-display="flex" data-chapter="Practice" data-section="5" data-timing="83:00–86:00 · 3 мин.">
+<h2>A reference answer</h2>
+<div class="split" style="grid-template-columns:1fr 340px;gap:50px;align-items:center"><div><dl class="card" style="font-size:27px;grid-template-columns:250px 1fr"><dt>Tools</dt><dd>Python; generate all graphs on n vertices (networkx, or nauty’s geng); a Hamiltonicity test (dynamic programming over subsets, O(2ⁿ n²))</dd><dt>Checker</dt><dd>a separate 20-line script: connected, minimum degree ≥ 2, no Hamiltonian cycle — run on the returned graph</dd><dt>Budget, stopping</dt><dd>n ≤ 10, ten minutes; stop at the first checked counterexample</dd><dt>What can go wrong</dt><dd>a bug in the Hamiltonicity test; reporting “none up to n = 8” as a proof</dd><dt>A person checks</dt><dd>reads the checker and looks at the drawing</dd></dl></div><figure style="text-align:center"><svg viewBox="0 0 300 220" width="330" role="img" aria-label="Two triangles sharing one vertex; the shared vertex is highlighted as a cut vertex."><g stroke="#242621" stroke-width="3"><line x1="150" y1="110" x2="35" y2="35"/><line x1="150" y1="110" x2="35" y2="185"/><line x1="35" y1="35" x2="35" y2="185"/><line x1="150" y1="110" x2="265" y2="35"/><line x1="150" y1="110" x2="265" y2="185"/><line x1="265" y1="35" x2="265" y2="185"/></g><g fill="#527750"><circle cx="35" cy="35" r="13"/><circle cx="35" cy="185" r="13"/><circle cx="265" cy="35" r="13"/><circle cx="265" cy="185" r="13"/></g><circle cx="150" cy="110" r="15" fill="#a75e42"/></svg><figcaption class="small muted" style="margin-top:10px">connected, min degree 2,<br>no Hamiltonian cycle</figcaption></figure></div>
+<p class="key">A counterexample: two triangles sharing a vertex. The shared vertex is a cut vertex.</p>
+<aside class="notes" lang="ru"><p><strong>83:00–86:00 · 3 мин.</strong></p><p>Разобрать 2–3 ответа из бота, затем показать эталон. Главное — независимый проверяющий: короткий скрипт, который легко прочитать человеку, отдельно от кода поиска. Тогда ошибка в поиске не превратится в ложный «контрпример».</p><p>Контрпример: «бабочка» — два треугольника с общей вершиной, 5 вершин. Граф связный, у всех вершин степень ≥ 2, но общая вершина — точка сочленения: цикл не может обойти обе половины, не пройдя её дважды. Любой граф с точкой сочленения — контрпример.</p><p>Различать три исхода: найден и проверен контрпример; поиск остановлен по бюджету; в исследованном диапазоне контрпримера нет. Третий исход не доказывает гипотезу — как и «10 000 проверенных случаев».</p></aside>
+</section>
+
+<section class="slide" id="summary" data-display="flex" data-chapter="Practice" data-section="5" data-timing="86:00–90:00 · 4 мин.">
+<h2>What to remember</h2>
+<ol class="steps compact" style="font-size:33px;gap:22px"><li>An agent is an LLM, tools and a loop. The loop fits in a hundred lines.</li><li>Its state is its context: what is not in the context does not exist for it.</li><li>Feedback turns <span class="math">p<sup>n</sup></span> into near-certainty — if the checker is good.</li><li>Agents satisfy weak checkers instead of goals: check the artifact, not the report.</li><li>Limits and budgets are enforced outside the model.</li></ol>
+<p class="key">Next lecture: tools, APIs and MCP — how agents connect to services, and how to limit them.</p>
+<aside class="notes" lang="ru"><p><strong>86:00–90:00 · 4 мин.</strong></p><p>Пять строк — итог лекции. Связать с началом: чат-бот — цикл с человеком внутри; агент — цикл, где следующий шаг выбирает модель, а человек ставит цель, задаёт проверку и границы.</p><p>Вопрос на дом: возьмите задачу, записанную на доске в начале, и заполните для неё карточку агента. Кто проверяет? Сколько стоит проверка?</p><p>Дополнительно: <a href="https://minimal-agent.com/" target="_blank" rel="noopener noreferrer">minimal-agent.com</a> — агент с нуля; <a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noopener noreferrer">Building effective agents</a>; <a href="https://www.anthropic.com/engineering/building-c-compiler" target="_blank" rel="noopener noreferrer">пост о компиляторе C</a> — подробный рассказ о том, как устроить проверку для долгой работы агентов.</p></aside>
+</section>
+</div></div>
+  <dialog id="speaker-notes" class="speaker-notes" aria-labelledby="notes-heading">
+    <div class="notes-toolbar"><div><div class="notes-meta" id="notes-meta"></div><h2 id="notes-heading">Speaker notes</h2></div><button id="notes-close" type="button" aria-label="Close speaker notes">Close <kbd>Esc</kbd></button></div>
+    <div id="notes-content"></div>
+    <div class="notes-navigation"><button id="notes-previous" type="button">Previous</button><span id="notes-counter"></span><button id="notes-next" type="button">Next</button></div>
+  </dialog>
+  <script src="vendor/reveal/reveal.js"></script>
+  <script>
+    const notesDialog = document.getElementById('speaker-notes');
+    function updateNotes() {
+      const slide = Reveal.getCurrentSlide();
+      if (!slide) return;
+      const index = Reveal.getIndices().h;
+      const total = Reveal.getTotalSlides();
+      document.body.classList.toggle('opening-slide', slide.id === 'opening');
+      document.body.classList.toggle('section-break', slide.classList.contains('section-divider'));
+      document.getElementById('notes-meta').textContent = `Slide ${index + 1} of ${total} · ${slide.dataset.timing}`;
+      document.getElementById('notes-heading').textContent = slide.querySelector('h1, h2')?.textContent || slide.querySelector('blockquote')?.textContent || 'Speaker notes';
+      document.getElementById('notes-content').innerHTML = slide.querySelector('.notes')?.innerHTML || '';
+      document.getElementById('notes-counter').textContent = `${index + 1} / ${total}`;
+      document.getElementById('notes-previous').disabled = index === 0;
+      document.getElementById('notes-next').disabled = index === total - 1;
+    }
+    function toggleNotes() {
+      if (notesDialog.open) notesDialog.close();
+      else { updateNotes(); notesDialog.showModal(); }
+    }
+    document.getElementById('notes-close').addEventListener('click', () => notesDialog.close());
+    document.getElementById('notes-previous').addEventListener('click', () => Reveal.prev());
+    document.getElementById('notes-next').addEventListener('click', () => Reveal.next());
+    notesDialog.addEventListener('keydown', event => {
+      if (event.key === 'Escape' || event.key.toLowerCase() === 'n') {
+        event.preventDefault(); event.stopPropagation(); notesDialog.close();
+        return;
+      }
+      if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+        event.preventDefault(); event.stopPropagation();
+        if (event.key === 'ArrowRight') Reveal.next(); else Reveal.prev();
+      }
+    });
+    // Keep linear slide navigation; group only the Esc overview by lecture block.
+    function layoutSectionOverview() {
+      const reveal = Reveal.getRevealElement();
+      const slides = Reveal.getHorizontalSlides();
+      const groups = new Map();
+      slides.forEach((slide, index) => {
+        const key = slide.dataset.section;
+        if (!groups.has(key)) groups.set(key, { chapter: slide.dataset.chapter, slides: [] });
+        groups.get(key).slides.push({ slide, index });
+      });
+      const { width, height } = Reveal.getComputedSlideSize();
+      const columnGap = 140, labelHeight = 140, rowGap = 100;
+      const rowHeight = labelHeight + height + rowGap;
+      const gridWidth = Math.max(...Array.from(groups.values(), group => group.slides.length)) * (width + columnGap) - columnGap;
+      const gridHeight = groups.size * rowHeight - rowGap;
+      Reveal.getSlidesElement().querySelectorAll('.overview-row-label').forEach(label => label.remove());
+      Array.from(groups.entries()).forEach(([key, group], row) => {
+        const label = document.createElement('div');
+        label.className = 'overview-row-label';
+        label.textContent = `${key} · ${group.chapter}`;
+        label.style.top = `${row * rowHeight}px`;
+        Reveal.getSlidesElement().appendChild(label);
+        group.slides.forEach(({ slide, index }, column) => {
+          const position = `translate3d(${column * (width + columnGap)}px, ${row * rowHeight + labelHeight}px, 0)`;
+          slide.style.setProperty('--overview-position', position);
+          Reveal.getSlideBackground(index)?.style.setProperty('--overview-position', position);
+        });
+      });
+      const viewport = reveal.getBoundingClientRect();
+      const top = 65, bottom = 55, side = 35;
+      const scale = Math.min((viewport.width - 2 * side) / gridWidth, (viewport.height - top - bottom) / gridHeight);
+      reveal.style.setProperty('--section-overview-scale', scale);
+      reveal.style.setProperty('--section-overview-left', `${(viewport.width - gridWidth * scale) / 2}px`);
+      reveal.style.setProperty('--section-overview-top', `${top + (viewport.height - top - bottom - gridHeight * scale) / 2}px`);
+    }
+    Reveal.on('ready', layoutSectionOverview);
+    Reveal.on('overviewshown', layoutSectionOverview);
+    Reveal.on('resize', layoutSectionOverview);
+    Reveal.on('ready', updateNotes);
+    Reveal.on('slidechanged', updateNotes);
+    Reveal.initialize({
+      width: 1600, height: 900, margin: 0.06,
+      hash: true, controls: true, progress: true,
+      slideNumber: 'c/t', showSlideNumber: 'all',
+      transition: 'none', transitionSpeed: 'fast', backgroundTransition: 'none',
+      center: false, display: 'flex', navigationMode: 'linear',
+      pdfSeparateFragments: false, keyboard: { 78: toggleNotes }
+    });
+  </script>
+</body>
+</html>
