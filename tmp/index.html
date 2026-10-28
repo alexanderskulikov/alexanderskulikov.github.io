@@ -18,7 +18,6 @@
 <section class="slide" id="recap" data-display="flex" data-chapter="Introduction" data-section="0" data-timing="00:30–02:30 · 2 мин.">
 <h2>Where we are</h2>
 <div class="three" style="margin-top:10px"><div><h3>Lecture 2 · An LLM</h3><p>A Transformer computes the probability of the next token given the context.</p><p class="example">Pretraining → fine-tuning → RL.<br>It writes text. A tool call is also text.</p></div><div><h3>Lecture 3 · Memory</h3><p>The model remembers nothing between requests. Answer = parameters + context.</p><p class="example">A chatbot re-sends the whole conversation, memories and search results every turn.</p></div><div><h3>Today · Agents</h3><p>The model’s text becomes actions. Their results come back into the context.</p><p class="example">The loop runs until the goal is reached, the budget ends, or a person stops it.</p></div></div>
-<p class="key">A chatbot is already a loop — with you inside it.</p>
 <aside class="notes" lang="ru"><p><strong>00:30–02:30 · 2 мин.</strong></p><p><strong>Лекция 2.</strong> LLM — функция, которая по последовательности токенов выдаёт распределение следующего токена; ответ получается выборкой токен за токеном. Обучение: предобучение на текстах, дообучение на диалогах (SFT), затем RL с наградой за проверяемые ответы. Важная деталь со слайда про tool use: вызов инструмента — это просто текст в оговорённом формате, а исполняет его программа вокруг модели.</p><p><strong>Лекция 3.</strong> Модель ничего не помнит между запросами: ответ вычисляется только из параметров и контекста. Чат-бот вроде ChatGPT или Claude.ai на каждом ходе заново отправляет модели всю переписку, а также записи памяти и найденные документы. Всё, что «помнит» чат-бот, скопировано в контекст.</p><p><strong>Сегодня.</strong> Чат-бот — уже цикл: вы пишете, приложение собирает контекст, модель отвечает, вы читаете и решаете, что делать дальше. Если на место человека поставить инструменты, а решение о следующем шаге отдать модели, получится агент. Этим и займёмся.</p></aside>
 </section>
 
@@ -30,20 +29,14 @@
 <p class="flow-label">Agent (today)</p>
 <div class="flow tight"><div class="flow-node"><h3>Goal</h3><p>given once</p></div><span class="arrow" aria-hidden="true">→</span><div class="flow-node"><h3>Harness</h3><p>builds the context: history, tool results</p></div><span class="arrow" aria-hidden="true">→</span><div class="flow-node"><h3>LLM</h3><p>writes a tool call, or says it is done</p></div><span class="arrow" aria-hidden="true">→</span><div class="flow-node"><h3>Tools</h3><p>run it: shell, files, browser — and return the result</p></div></div>
 <p class="loop-back">↺ repeat until done or out of budget</p>
-<p class="key">Who chooses the next step? In a chatbot, you do. In an agent, the model does.</p>
 <aside class="notes" lang="ru"><p><strong>02:30–04:00 · 1.5 мин.</strong></p><p>Сравнить две строки слева направо. Верхняя — схема из лекции 3: приложение собирает контекст и вызывает модель; после ответа ход возвращается к человеку. Нижняя — та же схема, но место человека в цикле заняли инструменты, а цель задана один раз в начале.</p><p>Вопрос из лекции 1: кто выбирает следующий шаг после того, как инструмент вернул результат, — вы или система? В агенте — модель. Человек остаётся снаружи: ставит цель, задаёт инструменты и разрешения, проверяет результат и может остановить цикл.</p><p>Термин <em>harness</em> («обвязка») — программа вокруг модели, которая собирает контекст, исполняет вызовы и следит за бюджетом. Подробнее — в разделе 1.</p></aside>
 </section>
 
-<section class="slide board" id="warm-up" data-display="flex" data-chapter="Introduction" data-section="0" data-timing="04:00–05:30 · 1.5 мин.">
-<p class="board-kicker">A question for the board</p>
-<h2>Which task would you give an&nbsp;agent for an&nbsp;hour, unsupervised?</h2>
-<p class="board-sub">And how would you check the result?</p>
-<aside class="notes" lang="ru"><p><strong>04:00–05:30 · 1.5 мин.</strong></p><p>Вопрос без номера, ответы устно. Записать на доске 3–4 задачи в левом столбце, а в правом — как проверить результат. Если проверка непонятна («написать главу диплома»), так и записать: «проверка — ?».</p><p>Эта таблица на доске — скелет всей лекции: агенты сильны там, где правый столбец заполнен легко. К ней вернёмся в практике.</p></aside>
-</section>
 
 <section class="slide" id="lecture-plan" data-display="flex" data-chapter="Introduction" data-section="0" data-timing="05:30–06:00 · 0.5 мин.">
 <h2>Today’s lecture</h2>
-<ol class="lecture-map"><li><div><strong>The agent loop</strong><span>an LLM, tools and a while loop</span></div></li><li><div><strong>Why agents work</strong><span>feedback, checking and its limits</span></div></li><li><div><strong>Real agents today</strong><span>from cheap checks to no checks at all</span></div></li><li><div><strong>Back to our two agents</strong><span>did they succeed? we check ourselves</span></div></li><li><div><strong>Practice</strong><span>design an agent</span></div></li></ol>
+<ol class="lecture-map"><li><div><strong>The agent loop</strong></div></li><li><div><strong>Why agents work</strong>
+</div></li><li><div><strong>Real agents today</strong></div></li><li><div><strong>Back to our two agents</strong></div></li></ol>
 <aside class="notes" lang="ru"><p><strong>05:30–06:00 · 0.5 мин.</strong></p><p>Пять разделов. Сквозная мысль: цикл агента простой, а его сила определяется обратной связью — тем, насколько дёшево и надёжно можно проверить результат каждого шага и всей работы.</p><p>Четвёртый раздел — проверка двух агентов, которых мы сейчас запустим.</p></aside>
 </section>
 
