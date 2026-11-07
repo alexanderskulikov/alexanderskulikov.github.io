@@ -1,0 +1,1153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Computer Science and Artificial Intelligence</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+    <style>
+      @font-face {
+        font-family: "Ubuntu Local";
+        src: url("../csai/fonts/Ubuntu-Regular.ttf") format("truetype");
+        font-weight: 400;
+      }
+
+      @font-face {
+        font-family: "Ubuntu Local";
+        src: url("../csai/fonts/Ubuntu-Bold.ttf") format("truetype");
+        font-weight: 700;
+      }
+
+      :root {
+        --ink: #17142a;
+        --muted: #67637a;
+        --paper: #f6f4ff;
+        --surface: #ffffff;
+        --line: #ddd8f0;
+        --purple: #6d5cff;
+        --purple-dark: #3f347f;
+        --violet-soft: #ece8ff;
+        --lime: #c9ff7a;
+        --shadow: 0 22px 60px rgba(23, 20, 42, 0.2);
+        --slide-safe-x: 2.3em;
+        --slide-safe-y: 1.44em;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #17142a;
+      }
+
+      .reveal-viewport {
+        background: #17142a;
+      }
+
+      .reveal {
+        color: var(--ink);
+        font-family: "Ubuntu Local", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      .reveal .slides {
+        text-align: left;
+      }
+
+      .reveal .slides section {
+        min-height: 100%;
+      }
+
+      .reveal h1,
+      .reveal h2,
+      .reveal h3,
+      .reveal p {
+        margin-left: 0;
+        margin-right: 0;
+        font-family: inherit;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+
+      .reveal h1 {
+        max-width: 1160px;
+        color: #fff;
+        font-size: 5.8em;
+        line-height: 0.92;
+      }
+
+      .reveal h2 {
+        color: var(--ink);
+        font-size: 4.6em;
+        line-height: 1.05;
+      }
+
+      .reveal h3 {
+        color: var(--ink);
+        font-size: 0.62em;
+        line-height: 1.15;
+      }
+
+      .reveal p {
+        max-width: 880px;
+        color: var(--muted);
+        font-size: 1.35em;
+        line-height: 1.35;
+      }
+
+      .slide {
+        position: relative;
+        display: grid !important;
+        align-content: center;
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+        padding: var(--slide-safe-y) var(--slide-safe-x);
+      }
+
+      .hero-slide {
+        padding: 0.8em var(--slide-safe-x);
+        color: #fff;
+        background: transparent;
+      }
+
+      .cover-image {
+        display: none;
+      }
+
+      .hero-slide::after,
+      .section-slide::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      .hero-slide::after {
+        background: transparent;
+      }
+
+      .hero-slide p {
+        color: rgba(255, 255, 255, 0.82);
+        text-shadow: 0 4px 18px rgba(23, 20, 42, 0.62);
+      }
+
+      .hero-title-main,
+      .hero-title-subtitle {
+        display: block;
+        text-shadow: 0 6px 28px rgba(23, 20, 42, 0.7);
+      }
+
+      .hero-title-subtitle {
+        margin-top: 0.18em;
+        color: var(--lime);
+        font-size: 0.44em;
+        line-height: 1;
+      }
+
+      .eyebrow {
+        margin: 0 0 0.45em;
+        color: var(--lime);
+        font-size: 1em;
+        font-weight: 700;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.55em;
+        max-width: 1180px;
+        margin-top: 1.1em;
+      }
+
+      .menu-card,
+      .note-card {
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 0.52em;
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(12px);
+      }
+
+      .menu-card strong,
+      .menu-card span {
+        display: block;
+      }
+
+      .menu-card strong {
+        color: #fff;
+        font-size: 1.85em;
+      }
+
+      a.menu-card {
+        text-decoration: none;
+      }
+
+      a.menu-card:hover,
+      a.menu-card:focus-visible {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .menu-card span {
+        margin-top: 0.25em;
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 1.05em;
+      }
+
+      .section-slide h2 {
+        text-shadow: 0 6px 26px rgba(23, 20, 42, 0.72);
+      }
+
+      .section-slide {
+        color: #fff;
+        background: transparent;
+      }
+
+      .section-slide::after {
+        background: transparent;
+      }
+
+      .section-slide h2,
+      .section-slide p {
+        color: #fff;
+      }
+
+      .content-slide {
+        background:
+          radial-gradient(circle at 82% 0%, rgba(109, 92, 255, 0.12), transparent 28rem),
+          linear-gradient(180deg, #fbfaff 0%, var(--paper) 100%);
+      }
+
+      .team-block {
+        display: grid;
+        gap: 0.86em;
+        margin-top: 0.34em;
+      }
+
+      .team-block .team-label:nth-of-type(2) {
+        margin-top: 1.45em;
+      }
+
+      .team-label {
+        display: inline-flex;
+        width: max-content;
+        border: 1px solid rgba(109, 92, 255, 0.25);
+        border-radius: 999px;
+        padding: 0.2em 0.48em;
+        background: #fff;
+        color: var(--purple-dark);
+        font-size: 0.9em;
+        font-weight: 700;
+      }
+
+      .people-grid {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 0.86em 0.04em;
+      }
+
+      .people-grid.invited {
+        grid-template-columns: repeat(13, minmax(0, 1fr));
+        gap: 0.46em 0.01em;
+      }
+
+      .person {
+        display: grid;
+        justify-items: center;
+        gap: 0.4em;
+        min-width: 0;
+        text-align: center;
+      }
+
+      .person img {
+        width: 7em;
+        height: 7em;
+        border: 0.1em solid var(--purple);
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0 10px 24px rgba(23, 20, 42, 0.18);
+      }
+
+      .person span {
+        color: var(--ink);
+        font-size: 1em;
+        font-weight: 700;
+        line-height: 1.1;
+      }
+
+      .people-grid.invited .person img {
+        width: 5.278em;
+        height: 5.278em;
+      }
+
+      .people-grid.invited .person span {
+        font-size: 0.74em;
+        white-space: nowrap;
+      }
+
+      .self-intro-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 3em;
+        margin-top: 0.9em;
+        align-items: start;
+      }
+
+      .self-intro-person {
+        text-align: center;
+      }
+
+      .self-intro-person img {
+        width: 13em;
+        height: 13em;
+        border: 0.1em solid var(--purple);
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: var(--shadow);
+      }
+
+      .self-intro-person h3 {
+        margin: 0.65em 0 0.4em;
+        color: var(--purple-dark);
+        font-size: 1.8em;
+      }
+
+      .self-intro-person p {
+        margin: 0;
+        font-size: 1.35em;
+        line-height: 1.5;
+      }
+
+      .educational-photo-grid {
+        display: grid;
+        gap: 1em;
+        width: 100%;
+        margin-top: 0.8em;
+      }
+
+      .educational-photo-row {
+        display: grid;
+        grid-template-columns: 1.21fr 1fr;
+        gap: 1em;
+        align-items: start;
+      }
+
+      .educational-photo-row:last-child {
+        grid-template-columns: 1fr 2.527fr;
+      }
+
+      .educational-photo-grid img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+      }
+
+      .program-slide h2 {
+        margin: 0 0 0.6em;
+        font-size: 3.4em;
+      }
+
+      .program-layout {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 2em;
+        align-items: center;
+      }
+
+      .program-photo {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+      }
+
+      .program-points {
+        display: grid;
+        gap: 1.75em;
+        padding-left: 0.5em;
+      }
+
+      .program-points p {
+        margin: 0;
+        line-height: 1.35;
+      }
+
+      .program-points .program-duration {
+        color: var(--ink);
+        font-size: 2.8em;
+        font-weight: 700;
+        line-height: 1.1;
+      }
+
+      .program-points .program-fields {
+        margin-top: 0.35em;
+        color: var(--purple-dark);
+        font-size: 1.85em;
+        font-weight: 700;
+      }
+
+      .program-support {
+        border-top: 1px solid var(--line);
+        padding-top: 1.5em;
+      }
+
+      .program-points .program-label {
+        font-size: 1.35em;
+      }
+
+      .program-points .program-partner {
+        margin-top: 0.15em;
+        color: var(--purple-dark);
+        font-size: 2.2em;
+        font-weight: 700;
+        line-height: 1.1;
+      }
+
+      .program-points .program-activities {
+        color: var(--ink);
+        font-size: 1.7em;
+      }
+
+      .featured-people {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.7em;
+        margin-top: 0.9em;
+      }
+
+      .featured-people .person img {
+        width: 14em;
+        height: 14em;
+        border-width: 0.1em;
+      }
+
+      .featured-people .person span {
+        font-size: 1.25em;
+      }
+
+      .image-pair {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.65em;
+        align-items: start;
+        margin-top: 0.8em;
+      }
+
+      .image-card {
+        display: grid;
+        gap: 0.56em;
+      }
+
+      .image-card img {
+        width: 100%;
+        height: 18em;
+        border-radius: 8px;
+        object-fit: cover;
+        box-shadow: var(--shadow);
+      }
+
+      .image-card figcaption {
+        color: var(--ink);
+        font-size: 1.08em;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+
+      .image-pair.three {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1.2em;
+      }
+
+      .image-pair.three .image-card {
+        margin: 0;
+      }
+
+      .image-pair.three img {
+        height: 16em;
+      }
+
+      .image-pair.three figcaption {
+        font-size: 1.2em;
+        line-height: 1.35;
+      }
+
+      .placeholder {
+        display: grid;
+        place-items: center;
+        min-height: 7.8em;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+        color: var(--purple-dark);
+        font-size: 1em;
+        font-weight: 700;
+        box-shadow: 0 1px 0 rgba(23, 20, 42, 0.04);
+      }
+
+      .block-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.7em;
+        margin-top: 0.9em;
+      }
+
+      .block-grid.two {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .block-grid.vertical {
+        grid-template-columns: 1fr;
+        gap: 0.45em;
+      }
+
+      .text-block {
+        display: grid;
+        place-items: center;
+        min-height: 5.3em;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 0.75em;
+        background: #fff;
+        color: var(--purple-dark);
+        font-size: 1.28em;
+        font-weight: 700;
+        line-height: 1.16;
+        text-align: center;
+        box-shadow: 0 1px 0 rgba(23, 20, 42, 0.04);
+      }
+
+      .text-block h3 {
+        margin: 0 0 0.28em;
+        color: var(--purple-dark);
+        font-size: 1.05em;
+      }
+
+      .text-block p {
+        margin: 0;
+        color: var(--ink);
+        font-size: 0.72em;
+        font-weight: 400;
+        line-height: 1.28;
+      }
+
+      .text-block.left {
+        place-items: start;
+        text-align: left;
+      }
+
+      .text-block ul {
+        margin: 0;
+        padding-left: 1.1em;
+        color: var(--ink);
+        font-size: 0.72em;
+        font-weight: 400;
+        line-height: 1.28;
+        text-align: left;
+      }
+
+      .career-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+        gap: 1.5em;
+        margin-top: 0.75em;
+        align-items: center;
+      }
+
+      .career-slide h2 {
+        margin: 0 0 0.4em;
+      }
+
+      .career-slide > p {
+        margin: 0 0 0.8em;
+      }
+
+      .career-photo {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+      }
+
+      .career-column {
+        display: grid;
+        gap: 0.6em;
+      }
+
+      .career-column .text-block {
+        min-height: 0;
+        align-content: start;
+        gap: 0.3em;
+      }
+
+      .career-column .text-block h3 {
+        font-size: 1.05em;
+      }
+
+      .career-column .text-block p {
+        font-size: 0.92em;
+        line-height: 1.35;
+      }
+
+      .challenge-grid .text-block,
+      .challenge-card {
+        font-size: 1.44em;
+      }
+
+      .ai-photo-grid {
+        display: grid;
+        gap: 0.8em;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 0.62em;
+      }
+
+      .ai-photo-grid img {
+        width: 100%;
+        border-radius: 8px;
+        object-fit: cover;
+        box-shadow: var(--shadow);
+      }
+
+      .ai-photo-grid .wide-photo {
+        height: auto;
+        object-fit: contain;
+        background: #fff;
+      }
+
+      .ai-photo-grid .photo-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.8em;
+      }
+
+      .ai-photo-grid .photo-row img {
+        height: 13em;
+      }
+
+      .acts-slide h2 {
+        margin: 0 0 0.35em;
+        font-size: 3.6em;
+      }
+
+      .acts-photos {
+        display: grid;
+        grid-template-columns: 1.549fr 1fr;
+        gap: 1em;
+        align-items: start;
+      }
+
+      .acts-photos img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+      }
+
+      .acts-facts {
+        display: grid;
+        gap: 0.5em;
+        margin-top: 0.85em;
+      }
+
+      .acts-facts p {
+        max-width: none;
+        margin: 0;
+        font-size: 1.55em;
+        line-height: 1.3;
+      }
+
+      .acts-facts strong {
+        color: var(--ink);
+      }
+
+      .acts-facts .acts-result {
+        color: var(--purple-dark);
+        font-weight: 700;
+      }
+
+      .admission-photo {
+        width: 100%;
+        height: 24.5em;
+        margin-top: 0.52em;
+        border-radius: 8px;
+        object-fit: cover;
+        object-position: center bottom;
+        box-shadow: var(--shadow);
+      }
+
+      .admission-slide .admission-photo {
+        height: 21.5em;
+        object-position: center;
+      }
+
+      .closing-slide {
+        align-content: center;
+      }
+
+      .closing-image {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+      }
+
+      .closing-blocks,
+      .closing-questions {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.7em;
+        margin-top: 0.75em;
+      }
+
+      .closing-blocks .text-block,
+      .closing-questions .text-block {
+        align-content: start;
+      }
+
+      .closing-questions .text-block {
+        place-items: center;
+        align-content: center;
+        min-height: 3.8em;
+        font-size: 1.08em;
+        text-align: center;
+      }
+
+      .achievement-list {
+        display: grid;
+        gap: 0.9em;
+        margin-top: 0.8em;
+        padding: 0;
+        list-style: none;
+      }
+
+      .achievement-list > li {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 0.68em 0.82em;
+        background: #fff;
+        box-shadow: 0 1px 0 rgba(23, 20, 42, 0.04);
+      }
+
+      .achievement-list strong {
+        display: block;
+        color: var(--purple-dark);
+        font-size: 1.4em;
+      }
+
+      .achievement-list ul {
+        margin: 0.45em 0 0;
+        padding-left: 1.1em;
+      }
+
+      .achievement-list li li {
+        margin: 0.22em 0;
+        color: var(--ink);
+        font-size: 1.12em;
+        line-height: 1.25;
+      }
+
+      .reveal .progress {
+        color: var(--purple);
+      }
+
+      .reveal .controls {
+        color: var(--purple);
+      }
+
+      .partnership-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4em;
+        align-items: center;
+        margin-top: 1em;
+      }
+
+      .reveal .sponsorship-amount {
+        margin: 0;
+        color: var(--purple);
+        font-size: 7em;
+        font-weight: 700;
+        line-height: 1;
+      }
+
+      .partnership-layout h3 {
+        margin: 0 0 0.6em;
+        color: var(--purple-dark);
+        font-size: 2em;
+      }
+
+      .partnership-layout p {
+        font-size: 1.7em;
+        line-height: 1.4;
+      }
+
+      .partnership-slide h2 {
+        margin: 0 0 0.3em;
+      }
+
+      .partnership-photo {
+        display: block;
+        width: 100%;
+        height: 18em;
+        border-radius: 8px;
+        object-fit: cover;
+        object-position: center top;
+        box-shadow: var(--shadow);
+      }
+
+      .partnership-layout ul {
+        margin: 0;
+        padding-left: 1.15em;
+        color: var(--ink);
+        font-size: 2em;
+        line-height: 1.3;
+      }
+
+      .partnership-layout li + li {
+        margin-top: 0.3em;
+      }
+
+      .toc-dialog {
+        width: min(760px, calc(100vw - 48px));
+        max-height: calc(100vh - 48px);
+        margin: auto;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: clamp(24px, 5vw, 48px);
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Ubuntu Local", system-ui, sans-serif;
+        box-shadow: var(--shadow);
+      }
+
+      .toc-dialog::backdrop {
+        background: rgba(23, 20, 42, 0.88);
+      }
+
+      .toc-dialog h2 {
+        margin: 0 2em 0.8em 0;
+        font-size: clamp(26px, 5vw, 40px);
+      }
+
+      .toc-dialog ol {
+        display: grid;
+        gap: 6px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .toc-dialog a {
+        display: block;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px 18px;
+        background: #fff;
+        color: var(--purple-dark);
+        font-size: clamp(18px, 3vw, 24px);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .toc-dialog a:hover,
+      .toc-dialog a:focus-visible {
+        border-color: var(--purple);
+        background: var(--violet-soft);
+      }
+
+      .toc-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 40px;
+        height: 40px;
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--purple-dark);
+        font-size: 30px;
+        cursor: pointer;
+      }
+
+      .toc-close:hover,
+      .toc-close:focus-visible {
+        background: var(--violet-soft);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section class="slide hero-slide" data-background-image="../csai-assets/images/csai-brand-cover.png" data-background-size="cover" data-background-position="center" data-background-repeat="no-repeat">
+          <img class="cover-image" src="../csai-assets/images/csai-brand-cover.png" alt="">
+          <p class="eyebrow">Neapolis University Pafos x JetBrains Foundation</p>
+          <h1>
+            <span class="hero-title-main">Computer Science and Artificial Intelligence</span>
+          </h1>
+        </section>
+
+        <section class="slide content-slide">
+          <h2>Self-intro</h2>
+          <div class="self-intro-grid">
+            <div class="self-intro-person">
+              <img src="../csai-assets/images/professors/kitaeva.png" alt="Natalia Kitaeva">
+              <h3>Natalia Kitaeva</h3>
+              <p>239, All-Russian Olympiads, Sirius, IOI, MIT, management</p>
+            </div>
+            <div class="self-intro-person">
+              <img src="../csai-assets/images/professors/kulikov.jpg" alt="Alexander Kulikov">
+              <h3>Alexander Kulikov</h3>
+              <p>Dr.Sci., 60+ publications, CS Club and CS Center, SPbSU and UCSD, 1M+ learners in online courses</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide content-slide">
+          <h2>Educational Projects</h2>
+          <div class="educational-photo-grid">
+            <div class="educational-photo-row">
+              <img src="../csai-assets/images/csclub.jpg" alt="CS Club lecture">
+              <img src="../csai-assets/images/cscenter2017.jpg" alt="CS Center in 2017">
+            </div>
+            <div class="educational-photo-row">
+              <img src="../csai-assets/images/spbu.jpg" alt="SPbSU graduates">
+              <img src="../csai-assets/images/sirius_smirnov.jpg" alt="Stanislav Smirnov at Sirius">
+            </div>
+          </div>
+        </section>
+
+        <section class="slide content-slide program-slide">
+          <h2>Computer Science and Artificial Intelligence</h2>
+          <div class="program-layout">
+            <img class="program-photo" src="../csai-assets/images/nup4.jpg" alt="Neapolis University Pafos campus">
+            <div class="program-points">
+              <div>
+                <p class="program-duration">Four years</p>
+                <p class="program-fields">AI, CS, Math, SE</p>
+              </div>
+              <div class="program-support">
+                <p class="program-label">Supported by</p>
+                <p class="program-partner">JetBrains</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+          <section class="slide content-slide">
+            <h2>Professors</h2>
+            <div class="team-block">
+              <span class="team-label">Faculty</span>
+              <div class="people-grid">
+                <div class="person"><img src="../csai-assets/images/professors/avdiushenko.jpg" alt="Alexander Avdiushenko"><span>Alexander Avdiushenko</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/berlenko.jpg" alt="Tatiana Berlenko"><span>Tatiana Berlenko</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/kitaeva.png" alt="Natalia Kitaeva"><span>Natalia Kitaeva</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/kulikov.jpg" alt="Alexander Kulikov"><span>Alexander Kulikov</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/mavrin.jpeg" alt="Pavel Mavrin"><span>Pavel Mavrin</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/mihajlin.jpg" alt="Ivan Mihajlin"><span>Ivan Mihajlin</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/romanov.png" alt="Mikhail Romanov"><span>Mikhail Romanov</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/shen.jpg" alt="Alexander Shen"><span>Alexander Shen</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/smal.jpg" alt="Alexander Smal"><span>Alexander Smal</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/smolensky.jpg" alt="Andrei Smolensky"><span>Andrei Smolensky</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/tikhomirov.jpg" alt="Mikhail Tikhomirov"><span>Mikhail Tikhomirov</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/zhukova.jpg" alt="Darya Zhukova"><span>Darya Zhukova</span></div>
+              </div>
+              <span class="team-label">Invited Professors</span>
+              <div class="people-grid invited">
+                <div class="person"><img src="../csai-assets/images/professors/agarkov.jpg" alt="Ivan Agarkov"><span>Ivan<br>Agarkov</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/anisimov.jpg" alt="Artem Anisimov"><span>Artem<br>Anisimov</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/bakharev.jpg" alt="Fedor Bakharev"><span>Fedor<br>Bakharev</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/savvas.png" alt="Savvas Chatzichristofis"><span>Savvas<br>Chatzichristofis</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/kugushev.png" alt="Alexander Kugushev"><span>Alexander<br>Kugushev</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/kuligin.jpg" alt="Leonid Kuligin"><span>Leonid<br>Kuligin</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/nechaev.jpg" alt="Ilya Nechaev"><span>Ilya<br>Nechaev</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/nigmatullin.png" alt="Niyaz Nigmatullin"><span>Niyaz<br>Nigmatullin</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/ogorodnik.jpeg" alt="Simon Ogorodnik"><span>Simon<br>Ogorodnik</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/sergey.jpg" alt="Ilya Sergey"><span>Ilya<br>Sergey</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/shakirova.png" alt="Venera Shakirova"><span>Venera<br>Shakirova</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/slinko.jpg" alt="Igor Slinko"><span>Igor<br>Slinko</span></div>
+                <div class="person"><img src="../csai-assets/images/professors/tolstopyatov.png" alt="Vsevolod Tolstopyatov"><span>Vsevolod<br>Tolstopyatov</span></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="slide content-slide admission-slide">
+            <h2>Admission</h2>
+            <img class="admission-photo" src="../csai-assets/images/students24.jpg" alt="Students in 2024">
+            <div class="block-grid">
+              <div class="text-block">
+                <h3>2025–2026</h3>
+                <p><strong>2026:</strong> 38/164 applications, 9/39 countries</p>
+                <p><strong>2025:</strong> 25/78 Applications, 9/24 countries</p>
+              </div>
+              <div class="text-block">
+                <h3>Olympiads</h3>
+                <p>IOI, IOAI, IMC, IBO, IOAA</p>
+              </div>
+              <div class="text-block">
+                <h3>Sources</h3>
+                <p>Online clubs, ACTS, social networks</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="slide content-slide">
+            <h2>Olympiads</h2>
+            <div class="image-pair three">
+              <figure class="image-card">
+                <img src="../csai-assets/images/imc2026.jpeg" alt="IMC 2026 team">
+                <figcaption>IMC 2026: two gold medals, three silver medals, 12th place worldwide</figcaption>
+              </figure>
+              <figure class="image-card">
+                <img src="../csai-assets/images/iwls2026.jpeg" alt="IWLS 2026 team">
+                <figcaption>IWLS 2026: first place</figcaption>
+              </figure>
+              <figure class="image-card">
+                <img src="../csai-assets/images/icpc2026.jpg" alt="ICPC 2026 team">
+                <figcaption>ICPC: two-time World Finals participants</figcaption>
+              </figure>
+            </div>
+          </section>
+
+          <section class="slide content-slide career-slide">
+            <h2>Career Tracks</h2>
+            <p>59 students have graduated from the program</p>
+            <div class="career-layout">
+              <img class="career-photo" src="../csai-assets/images/nup_students.png" alt="Neapolis University Pafos students on a boat">
+              <div class="career-column">
+                <div class="text-block left">
+                  <p>Amazon, JetBrains, Pinely, Plata, startups</p>
+                </div>
+                <div class="text-block left">
+                  <h3>Graduate Studies</h3>
+                  <p>M.Sc.: Constructor University, KIT, University Pompeu Fabra, University of Cologne.</p>
+                  <p>Ph.D.: Cornell, NUS.</p>
+                </div>
+                <div class="text-block left">
+                  <h3>Publications</h3>
+                  <p>CAV26 (Distinguished Paper Award!), STACS26, POPL26, DL4C@NeurIPS25, STACS25, AAAI25, POPL25.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="slide content-slide">
+            <h2>High Schoolers</h2>
+            <div class="ai-photo-grid">
+              <img class="wide-photo" src="https://alexanderskulikov.github.io/csai-assets/images/clubs.jpg" alt="JetBrains Academy Youth Math Club, Youth Coder Club and Youth AI Club">
+              <div class="photo-row">
+                <img src="../csai-assets/images/ioai26.jpg" alt="IOAI 2026">
+                <img src="../csai-assets/images/ai26.JPG" alt="AI 2026">
+              </div>
+            </div>
+          </section>
+
+          <section class="slide content-slide acts-slide">
+            <h2>Algorithm and Code <br>Training School</h2>
+            <div class="acts-photos">
+              <img src="../csai-assets/images/acts2026.jpg" alt="ACTS 2026 participants working in a classroom">
+              <img src="../csai-assets/images/acts2026_2.jpg" alt="ACTS 2026 participants and mentors working together">
+            </div>
+            <div class="acts-facts">
+              <p><strong>7 camps</strong> in 2024-2026, <strong>300 participants</strong></p>
+              <p class="acts-result">25% of IOI 2026 winners are campers!</p>
+              <p><strong>Top universities:</strong> Cambridge, Constructor, Delft, École polytechnique, Harvard, MIT, NUP</p>
+            </div>
+          </section>
+
+          <section class="slide content-slide partnership-slide">
+            <h2>Partnership proposal</h2>
+            <img class="partnership-photo" src="../csai-assets/images/2026_opening_2.jpeg" alt="Students at the 2026 opening event">
+            <div class="partnership-layout">
+              <div>
+                <p class="sponsorship-amount">€60K</p>
+                <p>per student for four years</p>
+              </div>
+              <div>
+                <h3>Value for sponsors</h3>
+                <ul>
+                  <li>Offer students internships and hire them</li>
+                  <li>Teach courses and mentor projects</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+      </div>
+    </div>
+
+    <dialog class="toc-dialog" aria-labelledby="toc-title">
+      <button class="toc-close" type="button" aria-label="Close table of contents">×</button>
+      <h2 id="toc-title">Contents</h2>
+      <nav aria-label="Presentation slides">
+        <ol></ol>
+      </nav>
+    </dialog>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script>
+      const contents = document.querySelector(".toc-dialog");
+      const contentsList = contents.querySelector("ol");
+
+      document.querySelectorAll(".slides > section").forEach((slide, index) => {
+        const heading = slide.querySelector("h2");
+        if (!heading) return;
+        slide.id = slide.id || "slide-" + (index + 1);
+        const item = document.createElement("li");
+        const link = document.createElement("a");
+        link.href = "#/" + slide.id;
+        link.textContent = heading.textContent;
+        item.append(link);
+        contentsList.append(item);
+      });
+
+      Reveal.initialize({
+        hash: true,
+        controls: true,
+        progress: true,
+        center: false,
+        navigationMode: "linear",
+        width: 1366,
+        height: 768,
+        margin: 0,
+        transition: "slide",
+        overview: false,
+        keyboardCondition: () => !contents.open,
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape") return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        if (contents.open) contents.close();
+        else contents.showModal();
+      }, true);
+
+      contents.querySelector(".toc-close").addEventListener("click", () => contents.close());
+
+      contents.addEventListener("cancel", (event) => {
+        event.preventDefault();
+        contents.close();
+      });
+
+      contents.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", (event) => {
+          event.preventDefault();
+          const slide = document.getElementById(link.hash.slice(2));
+          contents.close();
+          Reveal.slide(Reveal.getIndices(slide).h);
+        });
+      });
+    </script>
+  </body>
+</html>
