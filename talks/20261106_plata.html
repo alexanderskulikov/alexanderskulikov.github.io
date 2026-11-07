@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Computer Science and Artificial Intelligence</title>
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
@@ -885,6 +885,368 @@
       .toc-close:focus-visible {
         background: var(--violet-soft);
       }
+
+      .mobile-nav {
+        display: none;
+      }
+
+      .ai-photo-grid picture,
+      .ai-photo-grid picture img {
+        display: block;
+      }
+
+      @media (max-width: 900px), (hover: none) and (pointer: coarse) {
+        body,
+        .reveal-viewport {
+          height: 100dvh;
+          overflow: hidden;
+          background: var(--paper);
+        }
+
+        .reveal {
+          height: 100dvh;
+          font-size: 16px;
+        }
+
+        .reveal .slides > .slide {
+          display: block !important;
+          align-content: start;
+          min-height: 0;
+          height: 100%;
+          padding: max(28px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) calc(100px + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+          overflow-x: hidden;
+          overflow-y: auto;
+          overscroll-behavior-y: contain;
+          touch-action: pan-y pinch-zoom;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        .reveal .slides > section:not(.present) {
+          display: none !important;
+        }
+
+        .reveal .slides > .hero-slide {
+          display: flex !important;
+          flex-direction: column;
+          justify-content: center;
+          gap: 24px;
+        }
+
+        .reveal h1 {
+          margin: 0;
+          max-width: none;
+          font-size: clamp(36px, 8vw, 64px);
+          line-height: 1.05;
+        }
+
+        .reveal h2 {
+          margin: 0 0 24px;
+          max-width: none;
+          font-size: clamp(28px, 4.2vw, 40px);
+          line-height: 1.12;
+          overflow-wrap: break-word;
+        }
+
+        .reveal p {
+          max-width: none;
+          margin: 0 0 16px;
+          font-size: 17px;
+          line-height: 1.5;
+        }
+
+        .reveal .eyebrow {
+          margin: 0;
+          font-size: 15px;
+          line-height: 1.45;
+        }
+
+        .reveal img {
+          max-width: 100%;
+        }
+
+        .self-intro-grid,
+        .program-layout,
+        .career-layout,
+        .partnership-layout {
+          gap: 28px;
+          margin-top: 0;
+        }
+
+        .self-intro-person img {
+          width: 128px;
+          height: 128px;
+          margin: 0 auto;
+        }
+
+        .self-intro-person h3 {
+          margin: 16px 0 10px;
+          font-size: 24px;
+        }
+
+        .self-intro-person p {
+          text-align: left;
+        }
+
+        .educational-photo-grid,
+        .ai-photo-grid,
+        .image-pair.three,
+        .acts-photos,
+        .block-grid {
+          width: 100%;
+          gap: 20px;
+          margin-top: 0;
+        }
+
+        .reveal .educational-photo-row {
+          gap: 20px;
+        }
+
+        .program-points {
+          gap: 24px;
+          padding-left: 0;
+        }
+
+        .reveal .program-points .program-duration {
+          font-size: 34px;
+        }
+
+        .reveal .program-points .program-fields {
+          font-size: 22px;
+        }
+
+        .program-support {
+          padding-top: 20px;
+        }
+
+        .reveal .program-points .program-label {
+          font-size: 17px;
+        }
+
+        .reveal .program-points .program-partner {
+          font-size: 30px;
+        }
+
+        .reveal .program-points .program-activities {
+          font-size: 19px;
+        }
+
+        .team-block {
+          gap: 20px;
+          margin-top: 0;
+        }
+
+        .team-block .team-label:nth-of-type(2) {
+          margin-top: 8px;
+        }
+
+        .team-label {
+          padding: 4px 8px;
+          font-size: 14px;
+        }
+
+        .reveal .people-grid,
+        .reveal .people-grid.invited {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 20px 12px;
+        }
+
+        .reveal .person,
+        .reveal .people-grid.invited .person {
+          gap: 10px;
+        }
+
+        .reveal .person img,
+        .reveal .people-grid.invited .person img {
+          width: 88px;
+          height: 88px;
+        }
+
+        .reveal .person span,
+        .reveal .people-grid.invited .person span {
+          font-size: 14px;
+          line-height: 1.25;
+          white-space: normal;
+          overflow-wrap: anywhere;
+        }
+
+        .reveal .image-pair.three,
+        .reveal .block-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .reveal .image-card {
+          gap: 12px;
+          margin: 0;
+        }
+
+        .reveal .image-pair.three img,
+        .reveal .admission-slide .admission-photo,
+        .reveal .partnership-photo,
+        .reveal .ai-photo-grid .photo-row img {
+          height: auto;
+          max-height: none;
+          margin-top: 0;
+          object-fit: contain;
+        }
+
+        .reveal .image-pair.three figcaption {
+          font-size: 17px;
+          line-height: 1.4;
+        }
+
+        .reveal .text-block {
+          min-height: 0;
+          align-content: start;
+          gap: 8px;
+          padding: 16px;
+          font-size: 18px;
+        }
+
+        .reveal .text-block h3 {
+          margin: 0;
+          font-size: 20px;
+          line-height: 1.25;
+        }
+
+        .reveal .text-block p,
+        .reveal .career-column .text-block p {
+          margin: 0;
+          font-size: 17px;
+          line-height: 1.5;
+        }
+
+        .admission-slide .block-grid,
+        .partnership-layout {
+          margin-top: 24px;
+        }
+
+        .career-column {
+          gap: 16px;
+        }
+
+        .ai-photo-grid .photo-row {
+          gap: 20px;
+        }
+
+        .acts-facts {
+          gap: 16px;
+          margin-top: 24px;
+        }
+
+        .reveal .acts-facts p {
+          margin: 0;
+          font-size: 17px;
+          line-height: 1.5;
+        }
+
+        .reveal .sponsorship-amount {
+          font-size: 64px;
+          line-height: 1;
+        }
+
+        .partnership-layout h3 {
+          margin-bottom: 12px;
+          font-size: 24px;
+        }
+
+        .reveal .partnership-layout ul {
+          font-size: 18px;
+          line-height: 1.5;
+        }
+
+        .mobile-nav {
+          position: fixed;
+          inset: auto 0 0;
+          z-index: 20;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          border-top: 1px solid var(--line);
+          padding: 8px max(12px, env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+          background: var(--paper);
+          color: var(--ink);
+          font-family: "Ubuntu Local", system-ui, sans-serif;
+        }
+
+        .mobile-nav button {
+          min-width: 44px;
+          min-height: 44px;
+          border: 1px solid var(--line);
+          border-radius: 8px;
+          background: #fff;
+          color: var(--purple-dark);
+          font: inherit;
+          cursor: pointer;
+        }
+
+        .mobile-nav button:disabled {
+          opacity: 0.35;
+          cursor: default;
+        }
+
+        .mobile-contents {
+          flex: 1;
+          padding: 0 12px;
+        }
+
+        .mobile-slide-number {
+          min-width: 52px;
+          color: var(--muted);
+          font-size: 14px;
+          text-align: center;
+        }
+
+        .toc-dialog {
+          width: calc(100vw - 24px);
+          max-height: calc(100dvh - 24px);
+          padding: 24px 20px;
+        }
+
+        .toc-dialog h2 {
+          margin: 0 44px 20px 0;
+          font-size: 26px;
+        }
+
+        .toc-dialog a {
+          min-height: 44px;
+          padding: 12px;
+          font-size: 17px;
+          line-height: 1.35;
+        }
+
+        .toc-close {
+          top: 8px;
+          right: 8px;
+          width: 44px;
+          height: 44px;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .reveal .self-intro-grid,
+        .reveal .program-layout,
+        .reveal .career-layout,
+        .reveal .partnership-layout,
+        .reveal .educational-photo-row,
+        .reveal .image-pair.three,
+        .reveal .block-grid,
+        .reveal .ai-photo-grid .photo-row,
+        .reveal .acts-photos {
+          grid-template-columns: minmax(0, 1fr);
+        }
+
+        .reveal .people-grid,
+        .reveal .people-grid.invited {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 379px) {
+        .reveal .people-grid,
+        .reveal .people-grid.invited {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
     </style>
   </head>
   <body>
@@ -1045,7 +1407,10 @@
           <section class="slide content-slide">
             <h2>High Schoolers</h2>
             <div class="ai-photo-grid">
-              <img class="wide-photo" src="https://alexanderskulikov.github.io/csai-assets/images/clubs.jpg" alt="JetBrains Academy Youth Math Club, Youth Coder Club and Youth AI Club">
+              <picture>
+                <source media="(max-width: 600px)" srcset="../csai-assets/images/clubs-mobile.jpg">
+                <img class="wide-photo" src="https://alexanderskulikov.github.io/csai-assets/images/clubs.jpg" alt="JetBrains Academy Youth Math Club, Youth Coder Club and Youth AI Club">
+              </picture>
               <div class="photo-row">
                 <img src="../csai-assets/images/ioai26.jpg" alt="IOAI 2026">
                 <img src="../csai-assets/images/ai26.JPG" alt="AI 2026">
@@ -1086,6 +1451,13 @@
       </div>
     </div>
 
+    <nav class="mobile-nav" aria-label="Slide navigation">
+      <button class="mobile-previous" type="button" aria-label="Previous slide">←</button>
+      <button class="mobile-contents" type="button" aria-haspopup="dialog">Contents</button>
+      <span class="mobile-slide-number" aria-live="polite"></span>
+      <button class="mobile-next" type="button" aria-label="Next slide">→</button>
+    </nav>
+
     <dialog class="toc-dialog" aria-labelledby="toc-title">
       <button class="toc-close" type="button" aria-label="Close table of contents">×</button>
       <h2 id="toc-title">Contents</h2>
@@ -1111,19 +1483,50 @@
         contentsList.append(item);
       });
 
+      const compactPresentation = window.matchMedia("(max-width: 900px), (hover: none) and (pointer: coarse)");
+      const previousButton = document.querySelector(".mobile-previous");
+      const nextButton = document.querySelector(".mobile-next");
+      const slideNumber = document.querySelector(".mobile-slide-number");
+
+      function presentationLayout() {
+        return compactPresentation.matches
+          ? { width: "100%", height: "100%", minScale: 1, maxScale: 1, controls: false, progress: false, touch: false, transition: "none" }
+          : { width: 1366, height: 768, minScale: 0.2, maxScale: 2, controls: true, progress: true, touch: true, transition: "slide" };
+      }
+
+      function updateMobileNavigation() {
+        const index = Reveal.getIndices().h;
+        const total = Reveal.getTotalSlides();
+        previousButton.disabled = index === 0;
+        nextButton.disabled = index === total - 1;
+        slideNumber.textContent = (index + 1) + " / " + total;
+        slideNumber.setAttribute("aria-label", "Slide " + (index + 1) + " of " + total);
+      }
+
       Reveal.initialize({
         hash: true,
-        controls: true,
-        progress: true,
         center: false,
         navigationMode: "linear",
-        width: 1366,
-        height: 768,
         margin: 0,
-        transition: "slide",
         overview: false,
+        scrollActivationWidth: null,
         keyboardCondition: () => !contents.open,
+        ...presentationLayout(),
+      }).then(updateMobileNavigation);
+
+      Reveal.on("slidechanged", (event) => {
+        if (compactPresentation.matches) event.currentSlide.scrollTop = 0;
+        updateMobileNavigation();
       });
+
+      compactPresentation.addEventListener("change", () => {
+        Reveal.configure(presentationLayout());
+        updateMobileNavigation();
+      });
+
+      previousButton.addEventListener("click", () => Reveal.prev());
+      nextButton.addEventListener("click", () => Reveal.next());
+      document.querySelector(".mobile-contents").addEventListener("click", () => contents.showModal());
 
       document.addEventListener("keydown", (event) => {
         if (event.key !== "Escape") return;
