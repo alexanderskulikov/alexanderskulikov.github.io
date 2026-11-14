@@ -1,0 +1,1674 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Teaching mathematics in the AI era — Alexander Kulikov</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+    <style>
+      @font-face {
+        font-family: "Ubuntu Local";
+        src: url("../csai/fonts/Ubuntu-Regular.ttf") format("truetype");
+        font-weight: 400;
+      }
+
+      @font-face {
+        font-family: "Ubuntu Local";
+        src: url("../csai/fonts/Ubuntu-Bold.ttf") format("truetype");
+        font-weight: 700;
+      }
+
+      :root {
+        --ink: #17142a;
+        --muted: #67637a;
+        --paper: #f6f4ff;
+        --surface: #ffffff;
+        --line: #ddd8f0;
+        --purple: #6d5cff;
+        --purple-dark: #3f347f;
+        --violet-soft: #ece8ff;
+        --lime: #c9ff7a;
+        --shadow: 0 22px 60px rgba(23, 20, 42, 0.2);
+        --slide-safe-x: 2.3em;
+        --slide-safe-y: 1.44em;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #17142a;
+      }
+
+      .reveal-viewport {
+        background: #17142a;
+      }
+
+      .reveal {
+        color: var(--ink);
+        font-family: "Ubuntu Local", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      .reveal .slides {
+        text-align: left;
+      }
+
+      .reveal .slides section {
+        min-height: 100%;
+      }
+
+      .reveal h1,
+      .reveal h2,
+      .reveal h3,
+      .reveal p {
+        margin-left: 0;
+        margin-right: 0;
+        font-family: inherit;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+
+      .reveal h1 {
+        max-width: 1160px;
+        color: #fff;
+        font-size: 5.8em;
+        line-height: 0.92;
+      }
+
+      .reveal h2 {
+        color: var(--ink);
+        font-size: 4.6em;
+        line-height: 1.05;
+      }
+
+      .reveal h3 {
+        color: var(--ink);
+        font-size: 0.62em;
+        line-height: 1.15;
+      }
+
+      .reveal p {
+        max-width: 880px;
+        color: var(--muted);
+        font-size: 1.35em;
+        line-height: 1.35;
+      }
+
+      .slide {
+        position: relative;
+        display: grid !important;
+        align-content: center;
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+        padding: var(--slide-safe-y) var(--slide-safe-x);
+      }
+
+      .hero-slide {
+        padding: 0.8em var(--slide-safe-x);
+        color: #fff;
+        background: transparent;
+      }
+
+      .cover-image {
+        display: none;
+      }
+
+      .hero-slide::after,
+      .section-slide::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      .hero-slide::after {
+        background: transparent;
+      }
+
+      .hero-slide p {
+        color: rgba(255, 255, 255, 0.82);
+        text-shadow: 0 4px 18px rgba(23, 20, 42, 0.62);
+      }
+
+      .hero-title-main,
+      .hero-title-subtitle {
+        display: block;
+        text-shadow: 0 6px 28px rgba(23, 20, 42, 0.7);
+      }
+
+      .hero-title-subtitle {
+        margin-top: 0.18em;
+        color: var(--lime);
+        font-size: 0.44em;
+        line-height: 1;
+      }
+
+      .eyebrow {
+        margin: 0 0 0.45em;
+        color: var(--lime);
+        font-size: 1em;
+        font-weight: 700;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.55em;
+        max-width: 1180px;
+        margin-top: 1.1em;
+      }
+
+      .menu-card,
+      .note-card {
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 0.52em;
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(12px);
+      }
+
+      .menu-card strong,
+      .menu-card span {
+        display: block;
+      }
+
+      .menu-card strong {
+        color: #fff;
+        font-size: 1.85em;
+      }
+
+      a.menu-card {
+        text-decoration: none;
+      }
+
+      a.menu-card:hover,
+      a.menu-card:focus-visible {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .menu-card span {
+        margin-top: 0.25em;
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 1.05em;
+      }
+
+      .section-slide h2 {
+        text-shadow: 0 6px 26px rgba(23, 20, 42, 0.72);
+      }
+
+      .section-slide {
+        color: #fff;
+        background: transparent;
+      }
+
+      .section-slide::after {
+        background: transparent;
+      }
+
+      .section-slide h2,
+      .section-slide p {
+        color: #fff;
+      }
+
+      .content-slide {
+        background:
+          radial-gradient(circle at 82% 0%, rgba(109, 92, 255, 0.12), transparent 28rem),
+          linear-gradient(180deg, #fbfaff 0%, var(--paper) 100%);
+      }
+
+      .team-block {
+        display: grid;
+        gap: 0.86em;
+        margin-top: 0.34em;
+      }
+
+      .team-block .team-label:nth-of-type(2) {
+        margin-top: 1.45em;
+      }
+
+      .team-label {
+        display: inline-flex;
+        width: max-content;
+        border: 1px solid rgba(109, 92, 255, 0.25);
+        border-radius: 999px;
+        padding: 0.2em 0.48em;
+        background: #fff;
+        color: var(--purple-dark);
+        font-size: 0.9em;
+        font-weight: 700;
+      }
+
+      .people-grid {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 0.86em 0.04em;
+      }
+
+      .people-grid.invited {
+        grid-template-columns: repeat(13, minmax(0, 1fr));
+        gap: 0.46em 0.01em;
+      }
+
+      .person {
+        display: grid;
+        justify-items: center;
+        gap: 0.4em;
+        min-width: 0;
+        text-align: center;
+      }
+
+      .person img {
+        width: 7em;
+        height: 7em;
+        border: 0.1em solid var(--purple);
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0 10px 24px rgba(23, 20, 42, 0.18);
+      }
+
+      .person span {
+        color: var(--ink);
+        font-size: 1em;
+        font-weight: 700;
+        line-height: 1.1;
+      }
+
+      .people-grid.invited .person img {
+        width: 5.278em;
+        height: 5.278em;
+      }
+
+      .people-grid.invited .person span {
+        font-size: 0.74em;
+        white-space: nowrap;
+      }
+
+      .self-intro-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 3em;
+        margin-top: 0.9em;
+        align-items: start;
+      }
+
+      .self-intro-person {
+        text-align: center;
+      }
+
+      .self-intro-person img {
+        width: 13em;
+        height: 13em;
+        border: 0.1em solid var(--purple);
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: var(--shadow);
+      }
+
+      .self-intro-person h3 {
+        margin: 0.65em 0 0.4em;
+        color: var(--purple-dark);
+        font-size: 1.8em;
+      }
+
+      .self-intro-person p {
+        margin: 0;
+        font-size: 1.35em;
+        line-height: 1.5;
+      }
+
+      .educational-photo-grid {
+        display: grid;
+        gap: 1em;
+        width: 100%;
+        margin-top: 0.8em;
+      }
+
+      .educational-photo-row {
+        display: grid;
+        grid-template-columns: 1.21fr 1fr;
+        gap: 1em;
+        align-items: start;
+      }
+
+      .educational-photo-row:last-child {
+        grid-template-columns: 1fr 2.527fr;
+      }
+
+      .educational-photo-grid img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+      }
+
+      .program-slide h2 {
+        margin: 0 0 0.6em;
+        font-size: 3.4em;
+      }
+
+      .program-layout {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 2em;
+        align-items: center;
+      }
+
+      .program-photo {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+      }
+
+      .program-points {
+        display: grid;
+        gap: 1.75em;
+        padding-left: 0.5em;
+      }
+
+      .program-points p {
+        margin: 0;
+        line-height: 1.35;
+      }
+
+      .program-points .program-duration {
+        color: var(--ink);
+        font-size: 2.8em;
+        font-weight: 700;
+        line-height: 1.1;
+      }
+
+      .program-points .program-fields {
+        margin-top: 0.35em;
+        color: var(--purple-dark);
+        font-size: 1.85em;
+        font-weight: 700;
+      }
+
+      .program-support {
+        border-top: 1px solid var(--line);
+        padding-top: 1.5em;
+      }
+
+      .program-points .program-label {
+        font-size: 1.35em;
+      }
+
+      .program-points .program-partner {
+        margin-top: 0.15em;
+        color: var(--purple-dark);
+        font-size: 2.2em;
+        font-weight: 700;
+        line-height: 1.1;
+      }
+
+      .program-points .program-activities {
+        color: var(--ink);
+        font-size: 1.7em;
+      }
+
+      .featured-people {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.7em;
+        margin-top: 0.9em;
+      }
+
+      .featured-people .person img {
+        width: 14em;
+        height: 14em;
+        border-width: 0.1em;
+      }
+
+      .featured-people .person span {
+        font-size: 1.25em;
+      }
+
+      .image-pair {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.65em;
+        align-items: start;
+        margin-top: 0.8em;
+      }
+
+      .image-card {
+        display: grid;
+        gap: 0.56em;
+      }
+
+      .image-card img {
+        width: 100%;
+        height: 18em;
+        border-radius: 8px;
+        object-fit: cover;
+        box-shadow: var(--shadow);
+      }
+
+      .image-card figcaption {
+        color: var(--ink);
+        font-size: 1.08em;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+
+      .image-pair.three {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1.2em;
+      }
+
+      .image-pair.three .image-card {
+        margin: 0;
+      }
+
+      .image-pair.three img {
+        height: 16em;
+      }
+
+      .image-pair.three figcaption {
+        font-size: 1.2em;
+        line-height: 1.35;
+      }
+
+      .placeholder {
+        display: grid;
+        place-items: center;
+        min-height: 7.8em;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+        color: var(--purple-dark);
+        font-size: 1em;
+        font-weight: 700;
+        box-shadow: 0 1px 0 rgba(23, 20, 42, 0.04);
+      }
+
+      .block-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.7em;
+        margin-top: 0.9em;
+      }
+
+      .block-grid.two {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .block-grid.vertical {
+        grid-template-columns: 1fr;
+        gap: 0.45em;
+      }
+
+      .text-block {
+        display: grid;
+        place-items: center;
+        min-height: 5.3em;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 0.75em;
+        background: #fff;
+        color: var(--purple-dark);
+        font-size: 1.28em;
+        font-weight: 700;
+        line-height: 1.16;
+        text-align: center;
+        box-shadow: 0 1px 0 rgba(23, 20, 42, 0.04);
+      }
+
+      .text-block h3 {
+        margin: 0 0 0.28em;
+        color: var(--purple-dark);
+        font-size: 1.05em;
+      }
+
+      .text-block p {
+        margin: 0;
+        color: var(--ink);
+        font-size: 0.72em;
+        font-weight: 400;
+        line-height: 1.28;
+      }
+
+      .text-block.left {
+        place-items: start;
+        text-align: left;
+      }
+
+      .text-block ul {
+        margin: 0;
+        padding-left: 1.1em;
+        color: var(--ink);
+        font-size: 0.72em;
+        font-weight: 400;
+        line-height: 1.28;
+        text-align: left;
+      }
+
+      .career-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+        gap: 1.5em;
+        margin-top: 0.75em;
+        align-items: center;
+      }
+
+      .career-slide h2 {
+        margin: 0 0 0.4em;
+      }
+
+      .career-slide > p {
+        margin: 0 0 0.8em;
+      }
+
+      .career-photo {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+      }
+
+      .career-column {
+        display: grid;
+        gap: 0.6em;
+      }
+
+      .career-column .text-block {
+        min-height: 0;
+        align-content: start;
+        gap: 0.3em;
+      }
+
+      .career-column .text-block h3 {
+        font-size: 1.05em;
+      }
+
+      .career-column .text-block p {
+        font-size: 0.92em;
+        line-height: 1.35;
+      }
+
+      .challenge-grid .text-block,
+      .challenge-card {
+        font-size: 1.44em;
+      }
+
+      .ai-photo-grid {
+        display: grid;
+        gap: 0.8em;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 0.62em;
+      }
+
+      .ai-photo-grid img {
+        width: 100%;
+        border-radius: 8px;
+        object-fit: cover;
+        box-shadow: var(--shadow);
+      }
+
+      .ai-photo-grid .wide-photo {
+        height: auto;
+        object-fit: contain;
+        background: #fff;
+      }
+
+      .ai-photo-grid .photo-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.8em;
+      }
+
+      .ai-photo-grid .photo-row img {
+        height: 13em;
+      }
+
+      .acts-slide h2 {
+        margin: 0 0 0.35em;
+        font-size: 3.6em;
+      }
+
+      .acts-photos {
+        display: grid;
+        grid-template-columns: 1.549fr 1fr;
+        gap: 1em;
+        align-items: start;
+      }
+
+      .acts-photos img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+      }
+
+      .acts-facts {
+        display: grid;
+        gap: 0.5em;
+        margin-top: 0.85em;
+      }
+
+      .acts-facts p {
+        max-width: none;
+        margin: 0;
+        font-size: 1.55em;
+        line-height: 1.3;
+      }
+
+      .acts-facts strong {
+        color: var(--ink);
+      }
+
+      .acts-facts .acts-result {
+        color: var(--purple-dark);
+        font-weight: 700;
+      }
+
+      .admission-photo {
+        width: 100%;
+        height: 24.5em;
+        margin-top: 0.52em;
+        border-radius: 8px;
+        object-fit: cover;
+        object-position: center bottom;
+        box-shadow: var(--shadow);
+      }
+
+      .admission-slide .admission-photo {
+        height: 21.5em;
+        object-position: center;
+      }
+
+      .closing-slide {
+        align-content: center;
+      }
+
+      .closing-image {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+      }
+
+      .closing-blocks,
+      .closing-questions {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.7em;
+        margin-top: 0.75em;
+      }
+
+      .closing-blocks .text-block,
+      .closing-questions .text-block {
+        align-content: start;
+      }
+
+      .closing-questions .text-block {
+        place-items: center;
+        align-content: center;
+        min-height: 3.8em;
+        font-size: 1.08em;
+        text-align: center;
+      }
+
+      .achievement-list {
+        display: grid;
+        gap: 0.9em;
+        margin-top: 0.8em;
+        padding: 0;
+        list-style: none;
+      }
+
+      .achievement-list > li {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 0.68em 0.82em;
+        background: #fff;
+        box-shadow: 0 1px 0 rgba(23, 20, 42, 0.04);
+      }
+
+      .achievement-list strong {
+        display: block;
+        color: var(--purple-dark);
+        font-size: 1.4em;
+      }
+
+      .achievement-list ul {
+        margin: 0.45em 0 0;
+        padding-left: 1.1em;
+      }
+
+      .achievement-list li li {
+        margin: 0.22em 0;
+        color: var(--ink);
+        font-size: 1.12em;
+        line-height: 1.25;
+      }
+
+      .reveal .progress {
+        color: var(--purple);
+      }
+
+      .reveal .controls {
+        color: var(--purple);
+      }
+
+      .partnership-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4em;
+        align-items: center;
+        margin-top: 1em;
+      }
+
+      .reveal .sponsorship-amount {
+        margin: 0;
+        color: var(--purple);
+        font-size: 7em;
+        font-weight: 700;
+        line-height: 1;
+      }
+
+      .partnership-layout h3 {
+        margin: 0 0 0.6em;
+        color: var(--purple-dark);
+        font-size: 2em;
+      }
+
+      .partnership-layout p {
+        font-size: 1.7em;
+        line-height: 1.4;
+      }
+
+      .partnership-slide h2 {
+        margin: 0 0 0.3em;
+      }
+
+      .partnership-photo {
+        display: block;
+        width: 100%;
+        height: 18em;
+        border-radius: 8px;
+        object-fit: cover;
+        object-position: center top;
+        box-shadow: var(--shadow);
+      }
+
+      .partnership-layout ul {
+        margin: 0;
+        padding-left: 1.15em;
+        color: var(--ink);
+        font-size: 2em;
+        line-height: 1.3;
+      }
+
+      .partnership-layout li + li {
+        margin-top: 0.3em;
+      }
+
+      .toc-dialog {
+        width: min(760px, calc(100vw - 48px));
+        max-height: calc(100vh - 48px);
+        margin: auto;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: clamp(24px, 5vw, 48px);
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Ubuntu Local", system-ui, sans-serif;
+        box-shadow: var(--shadow);
+      }
+
+      .toc-dialog::backdrop {
+        background: rgba(23, 20, 42, 0.88);
+      }
+
+      .toc-dialog h2 {
+        margin: 0 2em 0.8em 0;
+        font-size: clamp(26px, 5vw, 40px);
+      }
+
+      .toc-dialog ol {
+        display: grid;
+        gap: 6px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .toc-dialog a {
+        display: block;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px 18px;
+        background: #fff;
+        color: var(--purple-dark);
+        font-size: clamp(18px, 3vw, 24px);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .toc-dialog a:hover,
+      .toc-dialog a:focus-visible {
+        border-color: var(--purple);
+        background: var(--violet-soft);
+      }
+
+      .toc-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 40px;
+        height: 40px;
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--purple-dark);
+        font-size: 30px;
+        cursor: pointer;
+      }
+
+      .toc-close:hover,
+      .toc-close:focus-visible {
+        background: var(--violet-soft);
+      }
+
+      .mobile-nav {
+        display: none;
+      }
+
+      .ai-photo-grid picture,
+      .ai-photo-grid picture img {
+        display: block;
+      }
+
+      @media (max-width: 900px), (hover: none) and (pointer: coarse) {
+        body,
+        .reveal-viewport {
+          height: 100dvh;
+          overflow: hidden;
+          background: var(--paper);
+        }
+
+        .reveal {
+          height: 100dvh;
+          font-size: 16px;
+        }
+
+        .reveal .slides > .slide {
+          display: block !important;
+          align-content: start;
+          min-height: 0;
+          height: 100%;
+          padding: max(28px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) calc(100px + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+          overflow-x: hidden;
+          overflow-y: auto;
+          overscroll-behavior-y: contain;
+          touch-action: pan-y pinch-zoom;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        .reveal .slides > section:not(.present) {
+          display: none !important;
+        }
+
+        .reveal .slides > .hero-slide {
+          display: flex !important;
+          flex-direction: column;
+          justify-content: center;
+          gap: 24px;
+        }
+
+        .reveal h1 {
+          margin: 0;
+          max-width: none;
+          font-size: clamp(36px, 8vw, 64px);
+          line-height: 1.05;
+        }
+
+        .reveal h2 {
+          margin: 0 0 24px;
+          max-width: none;
+          font-size: clamp(28px, 4.2vw, 40px);
+          line-height: 1.12;
+          overflow-wrap: break-word;
+        }
+
+        .reveal p {
+          max-width: none;
+          margin: 0 0 16px;
+          font-size: 17px;
+          line-height: 1.5;
+        }
+
+        .reveal .eyebrow {
+          margin: 0;
+          font-size: 15px;
+          line-height: 1.45;
+        }
+
+        .reveal img {
+          max-width: 100%;
+        }
+
+        .self-intro-grid,
+        .program-layout,
+        .career-layout,
+        .partnership-layout {
+          gap: 28px;
+          margin-top: 0;
+        }
+
+        .self-intro-person img {
+          width: 128px;
+          height: 128px;
+          margin: 0 auto;
+        }
+
+        .self-intro-person h3 {
+          margin: 16px 0 10px;
+          font-size: 24px;
+        }
+
+        .self-intro-person p {
+          text-align: left;
+        }
+
+        .educational-photo-grid,
+        .ai-photo-grid,
+        .image-pair.three,
+        .acts-photos,
+        .block-grid {
+          width: 100%;
+          gap: 20px;
+          margin-top: 0;
+        }
+
+        .reveal .educational-photo-row {
+          gap: 20px;
+        }
+
+        .program-points {
+          gap: 24px;
+          padding-left: 0;
+        }
+
+        .reveal .program-points .program-duration {
+          font-size: 34px;
+        }
+
+        .reveal .program-points .program-fields {
+          font-size: 22px;
+        }
+
+        .program-support {
+          padding-top: 20px;
+        }
+
+        .reveal .program-points .program-label {
+          font-size: 17px;
+        }
+
+        .reveal .program-points .program-partner {
+          font-size: 30px;
+        }
+
+        .reveal .program-points .program-activities {
+          font-size: 19px;
+        }
+
+        .team-block {
+          gap: 20px;
+          margin-top: 0;
+        }
+
+        .team-block .team-label:nth-of-type(2) {
+          margin-top: 8px;
+        }
+
+        .team-label {
+          padding: 4px 8px;
+          font-size: 14px;
+        }
+
+        .reveal .people-grid,
+        .reveal .people-grid.invited {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 20px 12px;
+        }
+
+        .reveal .person,
+        .reveal .people-grid.invited .person {
+          gap: 10px;
+        }
+
+        .reveal .person img,
+        .reveal .people-grid.invited .person img {
+          width: 88px;
+          height: 88px;
+        }
+
+        .reveal .person span,
+        .reveal .people-grid.invited .person span {
+          font-size: 14px;
+          line-height: 1.25;
+          white-space: normal;
+          overflow-wrap: anywhere;
+        }
+
+        .reveal .image-pair.three,
+        .reveal .block-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .reveal .image-card {
+          gap: 12px;
+          margin: 0;
+        }
+
+        .reveal .image-pair.three img,
+        .reveal .admission-slide .admission-photo,
+        .reveal .partnership-photo,
+        .reveal .ai-photo-grid .photo-row img {
+          height: auto;
+          max-height: none;
+          margin-top: 0;
+          object-fit: contain;
+        }
+
+        .reveal .image-pair.three figcaption {
+          font-size: 17px;
+          line-height: 1.4;
+        }
+
+        .reveal .text-block {
+          min-height: 0;
+          align-content: start;
+          gap: 8px;
+          padding: 16px;
+          font-size: 18px;
+        }
+
+        .reveal .text-block h3 {
+          margin: 0;
+          font-size: 20px;
+          line-height: 1.25;
+        }
+
+        .reveal .text-block p,
+        .reveal .career-column .text-block p {
+          margin: 0;
+          font-size: 17px;
+          line-height: 1.5;
+        }
+
+        .admission-slide .block-grid,
+        .partnership-layout {
+          margin-top: 24px;
+        }
+
+        .career-column {
+          gap: 16px;
+        }
+
+        .ai-photo-grid .photo-row {
+          gap: 20px;
+        }
+
+        .acts-facts {
+          gap: 16px;
+          margin-top: 24px;
+        }
+
+        .reveal .acts-facts p {
+          margin: 0;
+          font-size: 17px;
+          line-height: 1.5;
+        }
+
+        .reveal .sponsorship-amount {
+          font-size: 64px;
+          line-height: 1;
+        }
+
+        .partnership-layout h3 {
+          margin-bottom: 12px;
+          font-size: 24px;
+        }
+
+        .reveal .partnership-layout ul {
+          font-size: 18px;
+          line-height: 1.5;
+        }
+
+        .mobile-nav {
+          position: fixed;
+          inset: auto 0 0;
+          z-index: 20;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          border-top: 1px solid var(--line);
+          padding: 8px max(12px, env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+          background: var(--paper);
+          color: var(--ink);
+          font-family: "Ubuntu Local", system-ui, sans-serif;
+        }
+
+        .mobile-nav button {
+          min-width: 44px;
+          min-height: 44px;
+          border: 1px solid var(--line);
+          border-radius: 8px;
+          background: #fff;
+          color: var(--purple-dark);
+          font: inherit;
+          cursor: pointer;
+        }
+
+        .mobile-nav button:disabled {
+          opacity: 0.35;
+          cursor: default;
+        }
+
+        .mobile-contents {
+          flex: 1;
+          padding: 0 12px;
+        }
+
+        .mobile-slide-number {
+          min-width: 52px;
+          color: var(--muted);
+          font-size: 14px;
+          text-align: center;
+        }
+
+        .toc-dialog {
+          width: calc(100vw - 24px);
+          max-height: calc(100dvh - 24px);
+          padding: 24px 20px;
+        }
+
+        .toc-dialog h2 {
+          margin: 0 44px 20px 0;
+          font-size: 26px;
+        }
+
+        .toc-dialog a {
+          min-height: 44px;
+          padding: 12px;
+          font-size: 17px;
+          line-height: 1.35;
+        }
+
+        .toc-close {
+          top: 8px;
+          right: 8px;
+          width: 44px;
+          height: 44px;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .reveal .self-intro-grid,
+        .reveal .program-layout,
+        .reveal .career-layout,
+        .reveal .partnership-layout,
+        .reveal .educational-photo-row,
+        .reveal .image-pair.three,
+        .reveal .block-grid,
+        .reveal .ai-photo-grid .photo-row,
+        .reveal .acts-photos {
+          grid-template-columns: minmax(0, 1fr);
+        }
+
+        .reveal .people-grid,
+        .reveal .people-grid.invited {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 379px) {
+        .reveal .people-grid,
+        .reveal .people-grid.invited {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      /* Bar-Ilan talk: the Plata theme, with layouts for this talk. */
+      .talk-slide h2 { margin: 0 0 0.6em; font-size: 3.4em; }
+      .talk-cover { align-content: space-between; padding-top: 5.2em; padding-bottom: 4.2em; }
+      .talk-cover h1 { margin: 0; font-size: 5.8em; line-height: 1.04; }
+      .talk-cover h1 span { color: var(--lime); }
+      .talk-cover .cover-details p { max-width: none; margin: 0.22em 0; font-size: 1.5em; line-height: 1.35; }
+      .talk-cover .cover-details .speaker { margin-bottom: 0.55em; color: #fff; font-size: 1.9em; font-weight: 700; }
+      .talk-slide strong { color: var(--purple-dark); }
+      .talk-slide p { max-width: none; }
+      .csai-program h2 { margin-bottom: 20px; }
+      .program-opening { display: block; width: 100%; height: auto; margin-bottom: 18px; border-radius: 8px; box-shadow: var(--shadow); }
+      .csai-program .program-layout { grid-template-columns: 240px minmax(0, 1fr); gap: 28px; }
+      .csai-program .program-points { grid-template-columns: 1fr 1.25fr 1fr; gap: 24px; align-items: center; padding-left: 0; }
+      .csai-program .program-duration { font-size: 2.25em; }
+      .csai-program .program-fields { font-size: 1.4em; }
+      .csai-program .program-support { border: 0; padding: 0; }
+      .csai-program .program-label { margin-bottom: 0.4em; color: var(--purple-dark); font-size: 1.45em; font-weight: 700; }
+      .csai-program .olympiads { color: var(--ink); font-size: 1.25em; white-space: nowrap; }
+      .csai-program .program-partnership .program-label { color: var(--muted); font-size: 1.2em; font-weight: 400; }
+      .csai-program .program-partner { font-size: 2em; }
+      .challenges-slide .challenge-intro { margin: 0.5em 0 1.4em; color: var(--muted); font-size: 2.1em; line-height: 1.3; }
+      .challenge-questions { display: grid; gap: 1.6em; }
+      .challenge-questions p { margin: 0; color: var(--ink); font-size: 2.65em; line-height: 1.2; }
+      .challenge-questions p:last-child { color: var(--purple-dark); }
+      .oral-layout { display: grid; grid-template-columns: 1.35fr 1fr; gap: 2.2em; align-items: center; }
+      .oral-layout img { display: block; width: 100%; height: auto; border-radius: 8px; box-shadow: var(--shadow); }
+      .oral-copy { display: grid; gap: 1.25em; }
+      .oral-copy p { margin: 0; color: var(--ink); font-size: 1.65em; line-height: 1.4; }
+      .flipped-slide .flipped-intro { margin: 0 0 0.6em; color: var(--ink); font-size: 1.85em; }
+      .flipped-format { display: grid; grid-template-columns: 1fr 1fr; gap: 3em; margin: 0.8em 0 1.7em; }
+      .flipped-format p { margin: 0; font-size: 1.6em; line-height: 1.35; }
+      .flipped-format strong { display: block; margin-bottom: 0.3em; }
+      .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 3em; border-top: 1px solid var(--line); padding-top: 1.6em; }
+      .pros-cons h3, .summary-columns h3 { margin: 0 0 0.55em; color: var(--purple-dark); font-size: 1.8em; }
+      .talk-list { margin: 0; padding-left: 1.1em; color: var(--ink); font-size: 1.5em; line-height: 1.4; }
+      .talk-list li + li { margin-top: 0.6em; }
+      .theory-stage { display: grid; align-items: center; height: 30em; }
+      .theory-frame { display: grid; align-content: center; justify-items: center; gap: 1.25em; height: 100%; }
+      .theory-frame[hidden] { display: none !important; }
+      .theory-frame h3 { margin: 0; color: var(--purple-dark); font-size: 2.35em; line-height: 1.15; text-align: center; }
+      .theory-frame img { display: block; width: auto; max-width: 100%; height: 24em; object-fit: contain; }
+      .theory-gif-pair { display: flex; justify-content: center; align-items: center; gap: 2em; width: 100%; }
+      .theory-gif-pair img { max-width: calc(50% - 1em); }
+      .theory-frame .sad-gif { width: 36em; height: auto; max-height: 24em; }
+      .theory-frame.theory-now { align-content: center; justify-items: start; gap: 2em; }
+      .theory-now h3 { font-size: 2.8em; text-align: left; }
+      .theory-now p { margin: 0; color: var(--ink); font-size: 2em; line-height: 1.4; }
+      .theory-now .research-question { color: var(--purple-dark); font-size: 1.8em; }
+      .theory-step { position: absolute; width: 0; height: 0; overflow: hidden; pointer-events: none; }
+      .research-images, .competition-images { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6em; }
+      .research-images figure, .competition-images figure { display: grid; gap: 0.75em; margin: 0; }
+      .research-images img, .competition-images img { display: block; width: 100%; height: 21em; object-fit: contain; border-radius: 8px; }
+      .research-images figcaption, .competition-images figcaption { color: var(--ink); font-size: 1.35em; font-weight: 700; line-height: 1.3; text-align: center; }
+      .applications-slide .research-context { margin: 0 0 0.8em; color: var(--ink); font-size: 1.6em; line-height: 1.35; }
+      .soqra-slide h2 { margin-bottom: 24px; }
+      .soqra-player { margin: 0; }
+      .soqra-player video { display: block; width: 1120px; max-width: 100%; height: auto; aspect-ratio: 1120 / 580; margin: 0 auto; border-radius: 8px; background: #fbfaf6; box-shadow: var(--shadow); }
+      .soqra-player figcaption { margin-top: 12px; color: var(--muted); font-size: 1em; line-height: 1.35; text-align: center; }
+      .soqra-player a { color: var(--purple-dark); }
+      .applications-slide .research-result { margin: 1.15em 0 0; color: var(--ink); font-size: 2em; line-height: 1.3; }
+      .applications-slide .research-result strong { color: var(--purple); font-size: 1.3em; }
+      .competition-images img { height: 18em; object-fit: contain; }
+      .competition-images figure:last-child img { object-position: center 38%; }
+      .competition-images figcaption { font-size: 1.25em; min-height: 2.6em; }
+      .competitions-slide .competition-note { margin: 1em 0 0.6em; color: var(--purple-dark); font-size: 1.6em; font-weight: 700; line-height: 1.35; }
+      .competitions-slide .competition-uses { margin: 0; font-size: 1.4em; line-height: 1.4; }
+      .summary-columns { display: grid; grid-template-columns: 0.95fr 1.15fr; gap: 3.2em; margin-top: 0.75em; }
+      .summary-columns .talk-list { font-size: 1.6em; }
+      .summary-columns .talk-list li + li { margin-top: 0.9em; }
+      @media (max-width: 900px), (hover: none) and (pointer: coarse) {
+        .reveal .talk-slide h2 { margin: 0 0 24px; font-size: clamp(28px, 4.2vw, 40px); }
+        .reveal .talk-cover { justify-content: space-between; gap: 40px; padding-top: 56px; padding-bottom: 100px; }
+        .reveal .talk-cover h1 { font-size: clamp(40px, 8vw, 64px); }
+        .reveal .talk-cover .cover-details p { font-size: 18px; }
+        .reveal .talk-cover .cover-details .speaker { font-size: 24px; }
+        .reveal .csai-program .program-layout, .oral-layout, .flipped-format, .pros-cons, .summary-columns { gap: 28px; }
+        .program-opening { margin-bottom: 28px; }
+        .reveal .csai-program .program-layout { grid-template-columns: 1fr 1.3fr; }
+        .reveal .csai-program .program-points { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+        .reveal .csai-program .program-duration { font-size: 34px; }
+        .reveal .csai-program .program-partnership .program-label { font-size: 17px; }
+        .reveal .csai-program .program-partner { font-size: 30px; }
+        .reveal .csai-program .program-fields, .reveal .csai-program .program-label { font-size: 23px; }
+        .reveal .csai-program .olympiads { font-size: 18px; white-space: normal; }
+        .reveal .challenges-slide .challenge-intro { margin: 0 0 32px; font-size: 22px; }
+        .challenge-questions { gap: 28px; }
+        .reveal .challenge-questions p { font-size: 28px; line-height: 1.25; }
+        .reveal .oral-copy p, .reveal .flipped-format p, .reveal .flipped-slide .flipped-intro { font-size: 18px; }
+        .flipped-format { margin: 24px 0 28px; }
+        .pros-cons { padding-top: 28px; }
+        .pros-cons h3, .summary-columns h3 { font-size: 24px; }
+        .talk-list, .summary-columns .talk-list { font-size: 18px; }
+        .theory-stage { height: auto; min-height: 440px; }
+        .theory-frame { gap: 24px; min-height: 440px; }
+        .theory-frame h3 { font-size: 28px; }
+        .theory-frame img { height: auto; max-height: 320px; }
+        .theory-gif-pair { gap: 16px; }
+        .theory-gif-pair img { max-width: calc(50% - 8px); }
+        .reveal .theory-frame .sad-gif { width: 100%; max-width: 480px; }
+        .theory-frame.theory-now { gap: 28px; }
+        .reveal .theory-now h3 { font-size: 32px; }
+        .reveal .theory-now p, .reveal .theory-now .research-question { font-size: 22px; }
+        .research-images, .competition-images { gap: 24px; }
+        .research-images img, .competition-images img { height: auto; max-height: none; object-fit: contain; }
+        .research-images figcaption, .competition-images figcaption { font-size: 17px; min-height: 0; }
+        .reveal .applications-slide .research-context { margin-bottom: 24px; font-size: 18px; }
+        .reveal .applications-slide .research-result { margin-top: 28px; font-size: 22px; }
+        .soqra-player figcaption { font-size: 14px; }
+        .reveal .competitions-slide .competition-note { margin-top: 28px; font-size: 20px; }
+        .reveal .competitions-slide .competition-uses { font-size: 18px; }
+        .summary-columns { margin-top: 0; }
+      }
+      @media (max-width: 600px) {
+        .reveal .csai-program .program-layout, .oral-layout, .flipped-format, .pros-cons, .research-images, .competition-images, .summary-columns { grid-template-columns: minmax(0, 1fr); }
+        .theory-gif-pair { flex-direction: column; }
+        .theory-gif-pair img { max-width: 100%; max-height: 260px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section id="title" class="slide hero-slide talk-cover" data-background-image="../csai-assets/images/csai-brand-cover.png" data-background-size="cover" data-background-position="center" data-background-repeat="no-repeat">
+          <h1>Teaching mathematics<br>in the <span>AI era</span></h1>
+          <div class="cover-details">
+            <p class="speaker">Alexander Kulikov</p>
+            <p>AI and the Future of Mathematics</p>
+            <p>Bar-Ilan University, November 15, 2026</p>
+          </div>
+        </section>
+
+        <section id="csai" class="slide content-slide talk-slide csai-program">
+          <h2>CSAI: B.Sc. at Neapolis University Pafos</h2>
+          <img class="program-opening" src="../csai-assets/images/2026_opening_2.jpeg" alt="Students at the 2026 academic year opening at Neapolis University Pafos">
+          <div class="program-layout">
+            <img class="program-photo" src="../csai-assets/images/nup4.jpg" alt="Neapolis University Pafos campus">
+            <div class="program-points">
+              <div>
+                <p class="program-duration">4 years</p>
+                <p class="program-fields">25 students per year</p>
+              </div>
+              <div class="program-support">
+                <p class="program-label">Selective admissions</p>
+                <p class="olympiads">IMO, IOI, IOAI, IBO, IOA</p>
+              </div>
+              <div class="program-partnership">
+                <p class="program-label">Supported by</p>
+                <p class="program-partner">JetBrains</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="challenges" class="slide content-slide talk-slide challenges-slide">
+          <h2>Challenges</h2>
+          <p class="challenge-intro">Writing code and proving theorems<br>have become much easier.</p>
+          <div class="challenge-questions">
+            <p>What is left for us, humans?</p>
+            <p>How should we educate future<br>mathematicians and engineers?</p>
+          </div>
+        </section>
+
+        <section id="oral-defence" class="slide content-slide talk-slide oral-slide">
+          <h2>Teaching Math: Homework Oral Defence</h2>
+          <div class="oral-layout">
+            <img src="../csai-assets/images/oral_defense.jpeg" alt="Students discussing mathematics during an oral homework defence">
+            <div class="oral-copy">
+              <p>Students explain and defend<br><strong>every homework assignment orally.</strong></p>
+              <p>We encourage them to try solving<br>each problem on their own first.</p>
+              <p><strong>AI tools are welcome.</strong><br>Students must understand their solutions and answer follow-up questions.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="flipped-class" class="slide content-slide talk-slide flipped-slide">
+          <h2>Teaching Math: Flipped Class</h2>
+          <p class="flipped-intro">I teach Discrete Mathematics in a flipped format.</p>
+          <div class="flipped-format">
+            <p><strong>Before class</strong>Students study the material independently.</p>
+            <p><strong>In class</strong>We solve problems and discuss proofs together.</p>
+          </div>
+          <div class="pros-cons">
+            <div>
+              <h3>Advantages</h3>
+              <ul class="talk-list">
+                <li>More class time for mathematical thinking</li>
+                <li>Immediate feedback on students’ reasoning</li>
+                <li>Students study at their own pace</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Challenges</h3>
+              <ul class="talk-list">
+                <li>Requires consistent preparation before class</li>
+                <li>Differences in preparation make discussion harder</li>
+                <li>AI summaries can replace the effort of understanding</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="soqra" class="slide content-slide talk-slide soqra-slide">
+          <h2>Soqra, AI Tutor: A Project by Students</h2>
+          <figure class="soqra-player">
+            <!-- Original animated preview recorded from https://soqra.io/ on November 14, 2026. -->
+            <video data-autoplay loop muted playsinline controls preload="metadata" poster="../csai-assets/images/soqra-preview.jpg" aria-label="Animated Soqra AI tutor demonstration with sample data">
+              <source src="../csai-assets/images/soqra-preview.mp4" type="video/mp4">
+              <a href="https://soqra.io/">View the Soqra demo</a>
+            </video>
+            <figcaption><a href="https://soqra.io/" target="_blank" rel="noopener noreferrer">Interactive preview with sample data</a></figcaption>
+          </figure>
+        </section>
+
+        <section id="research-theory" class="slide content-slide talk-slide theory-slide">
+          <h2>Research: Theory</h2>
+          <div class="theory-stage" aria-live="polite">
+            <div class="theory-frame" data-theory-frame="0">
+              <h3>Proving theorems in 2020</h3>
+              <img src="../csai-assets/images/baloon.gif" alt="An animated balloon scene">
+            </div>
+            <div class="theory-frame" data-theory-frame="1" hidden>
+              <h3>Proving theorems in 2026</h3>
+              <div class="theory-gif-pair">
+                <img src="../csai-assets/images/casino.gif" alt="An animated casino scene">
+                <img src="../csai-assets/images/wtf-what.gif" alt="An animated reaction of surprise">
+              </div>
+            </div>
+            <div class="theory-frame" data-theory-frame="2" hidden>
+              <h3>Do we like it?</h3>
+              <img class="sad-gif" src="../csai-assets/images/embarrassed-sad.gif" alt="An embarrassed, sad reaction">
+            </div>
+            <div class="theory-frame theory-now" data-theory-frame="3" hidden>
+              <h3>How we work today</h3>
+              <p>AI agents let us test many more conjectures.</p>
+              <p>Both faculty and students use agents extensively<br>in their research.</p>
+              <p class="research-question">We still need to choose good questions<br>and check the arguments carefully.</p>
+            </div>
+          </div>
+          <span class="fragment theory-step" data-fragment-index="0" aria-hidden="true"></span>
+          <span class="fragment theory-step" data-fragment-index="1" aria-hidden="true"></span>
+          <span class="fragment theory-step" data-fragment-index="2" aria-hidden="true"></span>
+        </section>
+
+        <section id="research-applications" class="slide content-slide talk-slide applications-slide">
+          <h2>Research: Applications</h2>
+          <p class="research-context">IWLS Programming Contest: synthesize efficient Boolean circuits for the given functions (five months)</p>
+          <div class="research-images">
+            <figure>
+              <img src="../csai-assets/images/iwls2024.png" alt="IWLS 2024 team">
+              <figcaption>IWLS 2024</figcaption>
+            </figure>
+            <figure>
+              <img src="../csai-assets/images/iwls2026.jpeg" alt="IWLS 2026 team">
+              <figcaption>IWLS 2026</figcaption>
+            </figure>
+          </div>
+          <p class="research-result">In 2026, AI agents helped us test<br><strong>10 times as many hypotheses.</strong></p>
+        </section>
+
+        <section id="competitions" class="slide content-slide talk-slide competitions-slide">
+          <h2>Competitions</h2>
+          <div class="competition-images">
+            <figure>
+              <img src="../csai-assets/images/imc2026.jpeg" alt="IMC 2026 team">
+              <figcaption>IMC 2026: two gold medals, three silver medals, 16th place worldwide</figcaption>
+            </figure>
+            <figure>
+              <img src="../csai-assets/images/icpc2026.jpg" alt="ICPC 2026 team">
+              <figcaption>ICPC: two-time World Finals participants</figcaption>
+            </figure>
+          </div>
+          <p class="competition-note">Competitions remain the least affected by AI:<br>students solve problems without AI and stay focused for five hours.</p>
+          <p class="competition-uses">Students can use AI to train and revisit unsolved problems after contests.<br>Coaches use AI to prepare contest rounds.</p>
+        </section>
+
+        <section id="summary" class="slide content-slide talk-slide summary-slide">
+          <h2>Summary and Open Problems</h2>
+          <div class="summary-columns">
+            <div>
+              <h3>Our experience</h3>
+              <ul class="talk-list">
+                <li>Oral defences reveal what students understand.</li>
+                <li>Class time can focus on doing mathematics together.</li>
+                <li>Agents let researchers explore many more ideas.</li>
+                <li>Contests preserve sustained, independent problem solving.</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Open questions</h3>
+              <ul class="talk-list">
+                <li>Which skills should students master without AI?</li>
+                <li>When does AI support learning, and when does it replace it?</li>
+                <li>How can we assess understanding at scale?</li>
+                <li>How do we teach students to choose good questions and verify AI-generated proofs?</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <nav class="mobile-nav" aria-label="Slide navigation">
+      <button class="mobile-previous" type="button" aria-label="Previous slide">←</button>
+      <button class="mobile-contents" type="button" aria-haspopup="dialog">Contents</button>
+      <span class="mobile-slide-number" aria-live="polite"></span>
+      <button class="mobile-next" type="button" aria-label="Next slide">→</button>
+    </nav>
+
+    <dialog class="toc-dialog" aria-labelledby="toc-title">
+      <button class="toc-close" type="button" aria-label="Close table of contents">×</button>
+      <h2 id="toc-title">Contents</h2>
+      <nav aria-label="Presentation slides">
+        <ol></ol>
+      </nav>
+    </dialog>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script>
+      const contents = document.querySelector(".toc-dialog");
+      const contentsList = contents.querySelector("ol");
+
+      document.querySelectorAll(".slides > section").forEach((slide, index) => {
+        const heading = slide.querySelector("h1, h2");
+        if (!heading) return;
+        slide.id = slide.id || "slide-" + (index + 1);
+        const item = document.createElement("li");
+        const link = document.createElement("a");
+        link.href = "#/" + slide.id;
+        link.textContent = heading.innerText.replace(/\s+/g, " ").trim();
+        item.append(link);
+        contentsList.append(item);
+      });
+
+      const compactPresentation = window.matchMedia("(max-width: 900px), (hover: none) and (pointer: coarse)");
+      const previousButton = document.querySelector(".mobile-previous");
+      const nextButton = document.querySelector(".mobile-next");
+      const slideNumber = document.querySelector(".mobile-slide-number");
+
+      function presentationLayout() {
+        return compactPresentation.matches
+          ? { width: "100%", height: "100%", minScale: 1, maxScale: 1, controls: false, progress: false, touch: false, transition: "none" }
+          : { width: 1366, height: 768, minScale: 0.2, maxScale: 2, controls: true, progress: true, touch: true, transition: "slide" };
+      }
+
+      function updateMobileNavigation() {
+        const index = Reveal.getIndices().h;
+        const total = Reveal.getTotalSlides();
+        previousButton.disabled = index === 0 && !Reveal.availableFragments().prev;
+        nextButton.disabled = index === total - 1 && !Reveal.availableFragments().next;
+        slideNumber.textContent = (index + 1) + " / " + total;
+        slideNumber.setAttribute("aria-label", "Slide " + (index + 1) + " of " + total);
+      }
+
+      Reveal.initialize({
+        hash: true,
+        center: false,
+        navigationMode: "linear",
+        margin: 0,
+        overview: false,
+        scrollActivationWidth: null,
+        keyboardCondition: () => !contents.open,
+        ...presentationLayout(),
+      }).then(() => { syncTheory(); updateMobileNavigation(); });
+
+      Reveal.on("slidechanged", (event) => {
+        if (compactPresentation.matches) event.currentSlide.scrollTop = 0;
+        syncTheory();
+        updateMobileNavigation();
+      });
+
+      compactPresentation.addEventListener("change", () => {
+        Reveal.configure(presentationLayout());
+        updateMobileNavigation();
+      });
+
+
+      // Fragment markers keep keyboard, click, touch buttons and URL history in sync.
+      const theorySlide = document.getElementById("research-theory");
+      function syncTheory() {
+        if (Reveal.getCurrentSlide() !== theorySlide) return;
+        const frame = (Reveal.getIndices().f ?? -1) + 1;
+        theorySlide.querySelectorAll("[data-theory-frame]").forEach((item) => {
+          item.hidden = Number(item.dataset.theoryFrame) !== frame;
+        });
+        if (compactPresentation.matches) theorySlide.scrollTop = 0;
+      }
+      ["fragmentshown", "fragmenthidden"].forEach((eventName) => {
+        Reveal.on(eventName, () => { syncTheory(); updateMobileNavigation(); });
+      });
+      theorySlide.addEventListener("click", (event) => {
+        if (contents.open || event.target.closest("a, button")) return;
+        Reveal.next();
+      });
+
+      previousButton.addEventListener("click", () => Reveal.prev());
+      nextButton.addEventListener("click", () => Reveal.next());
+      document.querySelector(".mobile-contents").addEventListener("click", () => contents.showModal());
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape") return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        if (contents.open) contents.close();
+        else contents.showModal();
+      }, true);
+
+      contents.querySelector(".toc-close").addEventListener("click", () => contents.close());
+
+      contents.addEventListener("cancel", (event) => {
+        event.preventDefault();
+        contents.close();
+      });
+
+      contents.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", (event) => {
+          event.preventDefault();
+          const slide = document.getElementById(link.hash.slice(2));
+          contents.close();
+          Reveal.slide(Reveal.getIndices(slide).h);
+        });
+      });
+    </script>
+  </body>
+</html>
