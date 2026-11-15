@@ -1276,12 +1276,14 @@
       .oral-layout img { display: block; width: 100%; height: auto; border-radius: 8px; box-shadow: var(--shadow); }
       .oral-copy { display: grid; gap: 1.25em; }
       .oral-copy p { margin: 0; color: var(--ink); font-size: 1.65em; line-height: 1.4; }
-      .flipped-slide .flipped-intro { margin: 0 0 0.6em; color: var(--ink); font-size: 1.85em; }
-      .flipped-format { display: grid; grid-template-columns: 1fr 1fr; gap: 3em; margin: 0.8em 0 1.7em; }
-      .flipped-format p { margin: 0; font-size: 1.6em; line-height: 1.35; }
-      .flipped-format strong { display: block; margin-bottom: 0.3em; }
-      .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 3em; border-top: 1px solid var(--line); padding-top: 1.6em; }
-      .pros-cons h3, .summary-columns h3 { margin: 0 0 0.55em; color: var(--purple-dark); font-size: 1.8em; }
+      .flipped-slide { padding: 0; }
+      .flipped-layout { display: grid; grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr); height: 100%; }
+      .flipped-book { display: block; width: 100%; height: 100%; max-height: none; object-fit: contain; }
+      .flipped-copy { align-self: center; padding: 40px 42px 76px; }
+      .flipped-copy h2 { margin: 0 0 32px; font-size: 2.9em; line-height: 1.08; }
+      .flipped-points { margin: 0; padding-left: 1.15em; color: var(--ink); font-size: 1.65em; line-height: 1.4; }
+      .flipped-points li + li { margin-top: 0.8em; }
+      .summary-columns h3 { margin: 0 0 0.55em; color: var(--purple-dark); font-size: 1.8em; }
       .talk-list { margin: 0; padding-left: 1.1em; color: var(--ink); font-size: 1.5em; line-height: 1.4; }
       .talk-list li + li { margin-top: 0.6em; }
       .theory-stage { display: grid; align-items: center; height: 30em; }
@@ -1314,16 +1316,25 @@
       .competition-images figcaption { font-size: 1.25em; min-height: 2.6em; }
       .competitions-slide .competition-note { margin: 1em 0 0.6em; color: var(--purple-dark); font-size: 1.6em; font-weight: 700; line-height: 1.35; }
       .competitions-slide .competition-uses { margin: 0; font-size: 1.4em; line-height: 1.4; }
-      .summary-columns { display: grid; grid-template-columns: 0.95fr 1.15fr; gap: 3.2em; margin-top: 0.75em; }
+      .summary-columns { display: grid; grid-template-columns: 1.15fr 1fr; gap: 3.2em; margin-top: 0.75em; }
       .summary-columns .talk-list { font-size: 1.6em; }
       .summary-columns .talk-list li + li { margin-top: 0.9em; }
+      .reveal .controls { width: 164px; height: 44px; right: 12px; bottom: 12px; }
+      .reveal .controls[data-controls-layout="bottom-right"] .navigate-left,
+      .reveal .controls[data-controls-layout="bottom-right"] .navigate-right { top: 0; bottom: auto; width: 44px; height: 44px; }
+      .reveal .controls[data-controls-layout="bottom-right"] .navigate-left { left: 0; right: auto; }
+      .reveal .controls[data-controls-layout="bottom-right"] .navigate-right { left: auto; right: 0; }
+      .reveal .controls .navigate-up, .reveal .controls .navigate-down { display: none; }
+      .desktop-slide-number { position: absolute; top: 0; left: 44px; right: 44px; height: 44px; color: var(--muted); font: 20px/44px "Ubuntu Local", system-ui, sans-serif; font-variant-numeric: tabular-nums; text-align: center; pointer-events: none; }
+      .mobile-slide-number { font-variant-numeric: tabular-nums; }
+      .mobile-slide-number[hidden] { display: block; visibility: hidden; }
       @media (max-width: 900px), (hover: none) and (pointer: coarse) {
         .reveal .talk-slide h2 { margin: 0 0 24px; font-size: clamp(28px, 4.2vw, 40px); }
         .reveal .talk-cover { justify-content: space-between; gap: 40px; padding-top: 56px; padding-bottom: 100px; }
         .reveal .talk-cover h1 { font-size: clamp(40px, 8vw, 64px); }
         .reveal .talk-cover .cover-details p { font-size: 18px; }
         .reveal .talk-cover .cover-details .speaker { font-size: 24px; }
-        .reveal .csai-program .program-layout, .oral-layout, .flipped-format, .pros-cons, .summary-columns { gap: 28px; }
+        .reveal .csai-program .program-layout, .oral-layout, .flipped-layout, .summary-columns { gap: 28px; }
         .program-opening { margin-bottom: 28px; }
         .reveal .csai-program .program-layout { grid-template-columns: 1fr 1.3fr; }
         .reveal .csai-program .program-points { grid-template-columns: minmax(0, 1fr); gap: 24px; }
@@ -1335,10 +1346,13 @@
         .reveal .challenges-slide .challenge-intro { margin: 0 0 32px; font-size: 22px; }
         .challenge-questions { gap: 28px; }
         .reveal .challenge-questions p { font-size: 28px; line-height: 1.25; }
-        .reveal .oral-copy p, .reveal .flipped-format p, .reveal .flipped-slide .flipped-intro { font-size: 18px; }
-        .flipped-format { margin: 24px 0 28px; }
-        .pros-cons { padding-top: 28px; }
-        .pros-cons h3, .summary-columns h3 { font-size: 24px; }
+        .reveal .oral-copy p { font-size: 18px; }
+        .flipped-layout { grid-template-columns: minmax(0, 1fr); height: auto; }
+        .flipped-book { width: 100%; max-width: 380px; height: auto; justify-self: center; }
+        .flipped-copy { display: contents; }
+        .reveal .flipped-copy h2 { order: -1; margin: 0; }
+        .flipped-points { font-size: 20px; }
+        .summary-columns h3 { font-size: 24px; }
         .talk-list, .summary-columns .talk-list { font-size: 18px; }
         .theory-stage { height: auto; min-height: 440px; }
         .theory-frame { gap: 24px; min-height: 440px; }
@@ -1361,7 +1375,7 @@
         .summary-columns { margin-top: 0; }
       }
       @media (max-width: 600px) {
-        .reveal .csai-program .program-layout, .oral-layout, .flipped-format, .pros-cons, .research-images, .competition-images, .summary-columns { grid-template-columns: minmax(0, 1fr); }
+        .reveal .csai-program .program-layout, .oral-layout, .research-images, .competition-images, .summary-columns { grid-template-columns: minmax(0, 1fr); }
         .theory-gif-pair { flex-direction: column; }
         .theory-gif-pair img { max-width: 100%; max-height: 260px; }
       }
@@ -1405,15 +1419,15 @@
           <h2>Challenges</h2>
           <p class="challenge-intro">Writing code and proving theorems<br>have become much easier.</p>
           <div class="challenge-questions">
-            <p>What is left for us, humans?</p>
+            <p>What is left for humans to do?</p>
             <p>How should we educate future<br>mathematicians and engineers?</p>
           </div>
         </section>
 
         <section id="oral-defence" class="slide content-slide talk-slide oral-slide">
-          <h2>Teaching Math: Homework Oral Defence</h2>
+          <h2>Teaching Math: Oral Homework Defense</h2>
           <div class="oral-layout">
-            <img src="../csai-assets/images/oral_defense.jpeg" alt="Students discussing mathematics during an oral homework defence">
+            <img src="../csai-assets/images/oral_defense.jpeg" alt="Students discussing mathematics during an oral homework defense">
             <div class="oral-copy">
               <p>Students explain and defend<br><strong>every homework assignment orally.</strong></p>
               <p>We encourage them to try solving<br>each problem on their own first.</p>
@@ -1423,27 +1437,14 @@
         </section>
 
         <section id="flipped-class" class="slide content-slide talk-slide flipped-slide">
-          <h2>Teaching Math: Flipped Class</h2>
-          <p class="flipped-intro">I teach Discrete Mathematics in a flipped format.</p>
-          <div class="flipped-format">
-            <p><strong>Before class</strong>Students study the material independently.</p>
-            <p><strong>In class</strong>We solve problems and discuss proofs together.</p>
-          </div>
-          <div class="pros-cons">
-            <div>
-              <h3>Advantages</h3>
-              <ul class="talk-list">
-                <li>More class time for mathematical thinking</li>
-                <li>Immediate feedback on students’ reasoning</li>
-                <li>Students study at their own pace</li>
-              </ul>
-            </div>
-            <div>
-              <h3>Challenges</h3>
-              <ul class="talk-list">
-                <li>Requires consistent preparation before class</li>
-                <li>Differences in preparation make discussion harder</li>
-                <li>AI summaries can replace the effort of understanding</li>
+          <div class="flipped-layout">
+            <img class="flipped-book" src="../csai-assets/images/dmbook.png" alt="The interactive Discrete Mathematics textbook and its table of contents">
+            <div class="flipped-copy">
+              <h2>Teaching Math:<br>A Flipped Classroom</h2>
+              <ul class="flipped-points">
+                <li><strong>Interactive textbook:</strong> 30 chapters, 500+ automatically graded problems (multiple choice, math, and code), and 500+ theory problems</li>
+                <li><strong>Flipped format:</strong> students study at home. All class time is devoted to discussing problems and addressing gaps in understanding.</li>
+                <li>I first tried this format in 2017 while teaching <strong>Algorithms 202 at UCSD.</strong></li>
               </ul>
             </div>
           </div>
@@ -1493,7 +1494,7 @@
 
         <section id="research-applications" class="slide content-slide talk-slide applications-slide">
           <h2>Research: Applications</h2>
-          <p class="research-context">IWLS Programming Contest: synthesize efficient Boolean circuits for the given functions (five months)</p>
+          <p class="research-context">IWLS Programming Contest: synthesize efficient Boolean circuits for given functions (five months)</p>
           <div class="research-images">
             <figure>
               <img src="../csai-assets/images/iwls2024.png" alt="IWLS 2024 team">
@@ -1516,7 +1517,7 @@
             </figure>
             <figure>
               <img src="../csai-assets/images/icpc2026.jpg" alt="ICPC 2026 team">
-              <figcaption>ICPC: two-time World Finals participants</figcaption>
+              <figcaption>ICPC: two World Finals appearances</figcaption>
             </figure>
           </div>
           <p class="competition-note">Competitions remain the least affected by AI:<br>students solve problems without AI and stay focused for five hours.</p>
@@ -1529,19 +1530,17 @@
             <div>
               <h3>Our experience</h3>
               <ul class="talk-list">
-                <li>Oral defences reveal what students understand.</li>
-                <li>Class time can focus on doing mathematics together.</li>
-                <li>Agents let researchers explore many more ideas.</li>
-                <li>Contests preserve sustained, independent problem solving.</li>
+                <li><strong>Homework:</strong> AI is welcome in most cases. Students defend their work orally.</li>
+                <li><strong>Class time:</strong> more interaction and more feedback.</li>
+                <li><strong>Research:</strong> we use AI extensively.</li>
+                <li><strong>Math and programming competitions:</strong> the least affected by AI.</li>
               </ul>
             </div>
             <div>
               <h3>Open questions</h3>
               <ul class="talk-list">
-                <li>Which skills should students master without AI?</li>
-                <li>When does AI support learning, and when does it replace it?</li>
-                <li>How can we assess understanding at scale?</li>
-                <li>How do we teach students to choose good questions and verify AI-generated proofs?</li>
+                <li>What should we still consider fundamental? What is already obsolete?</li>
+                <li>What new skills should students master?</li>
               </ul>
             </div>
           </div>
@@ -1550,8 +1549,8 @@
     </div>
 
     <nav class="mobile-nav" aria-label="Slide navigation">
-      <button class="mobile-previous" type="button" aria-label="Previous slide">←</button>
       <button class="mobile-contents" type="button" aria-haspopup="dialog">Contents</button>
+      <button class="mobile-previous" type="button" aria-label="Previous slide">←</button>
       <span class="mobile-slide-number" aria-live="polite"></span>
       <button class="mobile-next" type="button" aria-label="Next slide">→</button>
     </nav>
@@ -1592,13 +1591,26 @@
           : { width: 1366, height: 768, minScale: 0.2, maxScale: 2, controls: true, progress: true, touch: true, transition: "slide" };
       }
 
-      function updateMobileNavigation() {
+      function updateNavigation() {
         const index = Reveal.getIndices().h;
         const total = Reveal.getTotalSlides();
         previousButton.disabled = index === 0 && !Reveal.availableFragments().prev;
         nextButton.disabled = index === total - 1 && !Reveal.availableFragments().next;
-        slideNumber.textContent = (index + 1) + " / " + total;
-        slideNumber.setAttribute("aria-label", "Slide " + (index + 1) + " of " + total);
+        const controls = document.querySelector(".reveal .controls");
+        let desktopSlideNumber = controls?.querySelector(".desktop-slide-number");
+        if (controls && !desktopSlideNumber) {
+          desktopSlideNumber = document.createElement("span");
+          desktopSlideNumber.className = "desktop-slide-number";
+          desktopSlideNumber.setAttribute("aria-live", "polite");
+          controls.append(desktopSlideNumber);
+        }
+        [slideNumber, desktopSlideNumber].filter(Boolean).forEach((counter) => {
+          const label = (index + 1) + "/" + total;
+          if (counter.textContent !== label) counter.textContent = label;
+          counter.hidden = index === 0;
+          counter.setAttribute("aria-hidden", String(index === 0));
+          counter.setAttribute("aria-label", "Slide " + (index + 1) + " of " + total);
+        });
       }
 
       Reveal.initialize({
@@ -1610,17 +1622,17 @@
         scrollActivationWidth: null,
         keyboardCondition: () => !contents.open,
         ...presentationLayout(),
-      }).then(() => { syncTheory(); updateMobileNavigation(); });
+      }).then(() => { syncTheory(); updateNavigation(); });
 
       Reveal.on("slidechanged", (event) => {
         if (compactPresentation.matches) event.currentSlide.scrollTop = 0;
         syncTheory();
-        updateMobileNavigation();
+        updateNavigation();
       });
 
       compactPresentation.addEventListener("change", () => {
         Reveal.configure(presentationLayout());
-        updateMobileNavigation();
+        updateNavigation();
       });
 
 
@@ -1635,7 +1647,7 @@
         if (compactPresentation.matches) theorySlide.scrollTop = 0;
       }
       ["fragmentshown", "fragmenthidden"].forEach((eventName) => {
-        Reveal.on(eventName, () => { syncTheory(); updateMobileNavigation(); });
+        Reveal.on(eventName, () => { syncTheory(); updateNavigation(); });
       });
       theorySlide.addEventListener("click", (event) => {
         if (contents.open || event.target.closest("a, button")) return;
